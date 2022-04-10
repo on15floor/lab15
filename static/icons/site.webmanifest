@@ -1,0 +1,14 @@
+{
+    "name": "Lab15",
+    "short_name": "Lab15",
+    "icons": [
+        {
+            "src": "/static/icons/android-chrome-144x144.png",
+            "sizes": "144x144",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#0d0d0d",
+    "background_color": "#0d0d0d",
+    "display": "standalone"
+}

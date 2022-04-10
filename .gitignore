@@ -1,0 +1,12 @@
+# Folders
+__pycache__/
+/venv
+/.idea
+/tmp
+/deploy
+# Files
+*.env
+*.sqlite3
+*.log
+*.pot
+*.pyc

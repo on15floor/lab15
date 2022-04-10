@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Unity > KoT Guide{% endblock %}
+
+{% block body %}
+<div class="container pt-5 my-3 p-3 rounded shadow-sm container-theme">
+    <div class="media pt-3">
+        <img src="/static/img/unity/kot_guide_logo.png"
+             class="align-self-center mr-3 w-25 rounded" alt="KoT Guide">
+        <div class="media-body">
+            <p>Приложение является гидом по игре King of Thieves</p>
+            <a href="https://play.google.com/store/apps/details?id=com.Laboratory15.KoTGuide" target="_blank">
+                <img src="/static/img/unity/google_play_link.png" class="float-left w-25" alt="Download">
+            </a>
+        </div>
+    </div>
+    <div class="alert my-3 alert-theme">
+        <h6>Тут вы найдете много полезной информации, а именно:</h6>
+        <ul>
+            <li>Помощь в расстановке всех подземелий</li>
+            <li>Описание и стоимость апгрейдов видов ловушек</li>
+            <li>Все апгрейды вашего подземелья с указанием их стоимости</li>
+            <li>Информация о камнях и выгодных комбинаций ритуалов с ними</li>
+            <li>Награды и условия лиг воришек</li>
+        </ul>
+
+        <div id="carouselKotGuide" class="carousel slide w-75" data-ride="carousel">
+            <ol class="carousel-indicators">
+                <li data-target="#carouselKotGuide" data-slide-to="0" class="active"></li>
+                <li data-target="#carouselKotGuide" data-slide-to="1"></li>
+                <li data-target="#carouselKotGuide" data-slide-to="2"></li>
+                <li data-target="#carouselKotGuide" data-slide-to="3"></li>
+                <li data-target="#carouselKotGuide" data-slide-to="4"></li>
+            </ol>
+            <div class="carousel-inner rounded">
+                <div class="carousel-item active"><img src="/static/img/unity/kot_guide_scr01.png"
+                                                class="d-block img-fluid" alt="KoT Guide Scr 01"></div>
+                <div class="carousel-item"><img src="/static/img/unity/kot_guide_scr02.png"
+                                                class="d-block img-fluid" alt="KoT Guide Scr 02"></div>
+                <div class="carousel-item"><img src="/static/img/unity/kot_guide_scr03.png"
+                                                class="d-block img-fluid" alt="KoT Guide Scr 03"></div>
+                <div class="carousel-item"><img src="/static/img/unity/kot_guide_scr04.png"
+                                                class="d-block img-fluid" alt="KoT Guide Scr 04"></div>
+                <div class="carousel-item"><img src="/static/img/unity/kot_guide_scr05.png"
+                                                class="d-block img-fluid" alt="KoT Guide Scr 05"></div>
+            </div>
+            <a class="carousel-control-prev" href="#carouselKotGuide" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselKotGuide" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+        <br/><p><em>P.S. Вся информация была взята из сети интернет, если вы найдете ошибки или неточности, пожалуйста, свяжитесь
+            со мной! <strong>Это приложение не связано с Zeptolab.</strong></em></p>
+    </div>
+    <div class="medium text-muted" align="right">
+        <a href="/unity/privacy_policy/kot_guide" target="_blank">Privacy Policy</a>
+    </div>
+</div>
+{% endblock %}

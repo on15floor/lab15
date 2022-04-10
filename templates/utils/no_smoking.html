@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load percent_left %}
+{% block title %}Без сигарет{% endblock %}
+
+{% block body %}
+<!-- Posts -->
+<div class="container pt-5 my-3 p-3 rounded shadow-sm container-theme">
+    <h4 class="border-bottom pb-2 mb-2">Без сигарет 🚭</h4>
+    <div class="alert my-3 alert-theme" role="alert"> Когда человек отказывается от сигарет, его организм
+        сразу начинает восстанавливаться естественным образом. Чем раньше бросить курить, тем быстрее можно снизить
+        риск рака, болезней сердца, легких и других малоприятных последствий этой пагубной привычки.</div>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend"><div class="input-group-text">Start Day</div></div>
+                    <input type="text" class="form-control" name="in_start_day" placeholder={{data_out.time_start}}>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend"><div class="input-group-text">Stop Day</div></div>
+                    <input type="text" class="form-control" name="in_stop_day" placeholder={{data_out.time_stop}}>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend"><div class="input-group-text">Start Price</div></div>
+                    <input type="text" class="form-control" name="in_price_start" placeholder={{data_out.price_start}}>
+                    <div class="input-group-append"><span class="input-group-text">&#8381</span></div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend"><div class="input-group-text">Stop Price</div></div>
+                    <input type="text" class="form-control" name="in_price_stop" placeholder={{data_out.price_stop}}>
+                    <div class="input-group-append"><span class="input-group-text">&#8381</span></div>
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-outline-primary">Пересчитать</button>
+    </form>
+
+    <div class="alter my-3 p-3 pt-3 alert-theme" role="alert">
+        <h6>Немного цифр (из расчета пачка сигарет/день):</h6>
+        <ul>
+            <li>Вы курили <strong>{{data_out.days_smoking}}</strong>
+                дней и при этом потратили примерно <strong>{{data_out.money_spent}}</strong> руб.;
+            </li>
+            <li>А теперь, догоняйте! Уже не курите <strong>{{data_out.days_no_smoking}}</strong>
+                дней и сохранено <strong>{{data_out.money_saved}}</strong> руб.
+            </li>
+        </ul>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-3">
+        {% for el in no_smoking_db %}
+        <div class="col mb-4">
+            {% if data_out.time_stop|percent_left:el.time == 100 %}
+            <div class="card h-100 border-primary card-theme">
+                <div class="card-body">
+                    <h6 class="card-title">{{ el.name }} ({{ el.time_descr }})</h6>
+                    <p class="small text-muted">{{ el.text }}</p>
+                    <div class="progress" style="height: 5px;">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: 100%"></div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="card h-100 border-warning card-theme">
+                <div class="card-body">
+                    <h6 class="card-title">{{ el.name }} ({{ el.time_descr }})</h6>
+                    <p class="small text-muted">{{ el.text }} <strong>(~{{ data_out.time_stop|percent_left:el.time }}%)</strong></p>
+                    <div class="progress" style="height: 5px;">
+                        <div class="progress-bar bg-danger" role="progressbar"
+                             style="width:{{ data_out.time_stop|percent_left:el.time }}%">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

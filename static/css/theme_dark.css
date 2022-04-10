@@ -1,0 +1,36 @@
+body {
+    background-color: #001212;
+    background-image: url("/static/img/bg_dark.jpg");
+}
+
+h4, h6 {
+    color: #CCCCCC;
+}
+
+.border-bottom {
+    border-bottom: 1px solid #6C757D;
+}
+
+.container-theme {
+    background: rgba(0, 18, 18, .7);
+    color: #CCCCCC;
+}
+
+.alert-theme {
+    background: rgba(0, 18, 18, .3);
+    color: #BDBDBD;
+}
+
+.card-theme {
+    background: rgba(0, 18, 18, .8);
+}
+
+.theme-btn {
+    background: #222222;
+    box-shadow: 0 0 10px rgba(255,255,255,0.1);
+}
+
+/*Snow flake*/
+.snowflake {
+    filter: drop-shadow(0 0 10px white);
+}

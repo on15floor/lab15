@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Шпаргалки{% endblock %}
+
+{% block body %}
+<div class="container pt-5 my-3 p-3 rounded shadow-sm container-theme">
+    <h4 class="border-bottom pb-2 mb-2">Шпаргалки:
+        <a href="/utils/hints/git" class="btn btn-primary btn-sm">GIT</a>
+        <a href="/utils/hints/markdown" class="btn btn-secondary btn-sm">MarkDown</a>
+        <a href="/utils/hints/python" class="btn btn-success btn-sm">Python</a>
+        <a href="/utils/hints/sql" class="btn btn-danger btn-sm">SQL</a>
+        <a href="/utils/hints/bash" class="btn btn-warning btn-sm">BASH</a>
+        <a href="/utils/hints/vim" class="btn btn-info btn-sm">VIM</a>
+    </h4>
+    <div class="alert my-3 alert-theme">{{ doc }}</div>
+</div>
+{% endblock %}

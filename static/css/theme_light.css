@@ -1,0 +1,36 @@
+body {
+    background-color: #E0E0E0;
+    background-image: url("/static/img/bg_white.jpg");
+}
+
+h4, h6 {
+    color: #383838;
+}
+
+.border-bottom {
+    border-bottom: 1px solid #DEE2E6;
+}
+
+.container-theme {
+    background: rgba(255, 255, 255, .5);
+    color: #6C757D;
+}
+
+.alert-theme {
+    background: rgba(239, 239, 239, .9);
+    color: #6C757D;
+}
+
+.card-theme {
+    background: rgba(239, 239, 239, .8);
+}
+
+.theme-btn {
+    background: #ffffff;
+    box-shadow: 0 0 10px rgba(39,38,40,0.4);
+}
+
+/*Snow flake*/
+.snowflake {
+    filter: drop-shadow(0 0 10px dodgerblue);
+}
