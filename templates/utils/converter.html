@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-{% load static %}
 {% block title %}Конвертор{% endblock %}
 {% block body %}
 <div class="container pt-5 my-3 p-3 rounded shadow-sm container-theme">
@@ -30,6 +29,6 @@
         </select>
     </div>
 
-    <script src="{% static 'js/money_converter.js' %}"></script>
+    <script src="/static/js/money_converter.js"></script>
 </div>
 {% endblock %}

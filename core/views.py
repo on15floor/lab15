@@ -76,9 +76,19 @@ def unity_privacy_policy(game):
 
 
 @app.route('/utils/hints/<string:hint>')
-def docs_git(hint):
+def utils_hints(hint):
     if hint in HINTS:
         doc_content = Markup(get_markdown(f'{hint}.md'))
         return render_template('utils/hints.html', doc=doc_content)
     abort(404)
 
+
+@app.route('/utils/converter')
+def utils_converter():
+    return render_template('utils/converter.html')
+
+
+@app.route('/utils/no_smoking', methods=['GET', 'POST'])
+def utils_no_smoking():
+    if request.method == 'GET':
+        return render_template('signin.html')
