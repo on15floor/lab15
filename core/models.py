@@ -92,6 +92,22 @@ class Blog(BaseModel):
             offset=self.posts_per_page * (self.current_page - 1)
         ))
 
+    def commit_post(self, icon, title, intro, text):
+        post = {
+            'icon': icon,
+            'title': title,
+            'intro': intro,
+            'text': text,
+            'date': datetime.now()
+        }
+        self.db.insert(table=self.table_name, column_values=post)
+
+    def delete_post(self):
+        self.db.delete(
+            table=self.table_name,
+            where=f'WHERE id={self.current_post_id}'
+        )
+
     def has_next_page(self):
         return self.current_page < self.pages_count
 

@@ -54,12 +54,6 @@ def logout():
     return redirect('/')
 
 
-# @app.route('/protected')
-# @login_required
-# def protected():
-#     return 'Logged in as: ' + current_user.id
-
-
 @app.route('/unity/<string:game>')
 def unity_game(game):
     if game in UNITY_GAMES:
@@ -116,7 +110,28 @@ def blog():
     return render_template('blog/index.html', blog=Blog(page=page))
 
 
+@app.route('/blog/create', methods=['POST', 'GET'])
+@login_required
+def blog_post_create():
+    if request.method == 'GET':
+        return render_template('blog/post_edit.html')
+
+    Blog().commit_post(
+        icon=request.form['icon'],
+        title=request.form['title'],
+        intro=request.form['intro'],
+        text=request.form['text']
+    )
+    return redirect('/blog')
+
+
 @app.route('/blog/<int:post_id>')
 def blog_post(post_id):
     return render_template('blog/post.html', post=Blog(post_id=post_id).get_post())
 
+
+@app.route('/blog/<int:pos_id>/del')
+@login_required
+def blog_post_del(pos_id):
+    Blog(post_id=pos_id).delete_post()
+    return redirect('/blog')

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<!-- include summernote css/js -->
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+<script src="/static/js/summernote_text.js"></script>
+{% endblock %}
+
+{% block title %}Блог > Детали поста{% endblock %}
+
+{% block body %}
+<div class="container pt-5 my-3 p-3 rounded shadow-sm container-theme text-dark">
+    <h4>Детали поста</h4>
+    <form class="text-dark" method="post">
+        <input type="text" name="title" id="title" class="form-control" placeholder="Введите название"><br>
+        <textarea name="intro" id="intro" class="form-control" placeholder="Введите анонс"
+                  maxlength="200"></textarea><br>
+        <textarea name="text" id="text" class="form-control" placeholder="Введите основной текст"></textarea><br>
+        <textarea name="icon" id="icon" class="form-control" placeholder="Ссылка на иконку"></textarea><br>
+        <input type="submit" class="btn btn-success" value="Отправить"><br>
+    </form>
+</div>
+{% endblock %}
