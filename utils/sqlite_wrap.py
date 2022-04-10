@@ -13,9 +13,17 @@ class SQLite3Instance:
         return [dict(zip([desc[0] for desc in self.cur.description], row))
                 for row in self.cur.fetchall()]
 
-    def select(self, table: str, columns: List[str], where: str = '') -> List[dict]:
+    def select(self, table: str, columns: List[str],
+               where: str = '') -> List[dict]:
         columns_joined = ', '.join(columns) if columns else '*'
         sql = f'SELECT {columns_joined} FROM {table} ' + where
+        return self.pure_select(sql)
+
+    def select_limit(self, table: str, columns: List[str], where: str,
+                     offset: int, limit: int) -> List[dict]:
+        columns_joined = ', '.join(columns) if columns else '*'
+        sql = f'SELECT {columns_joined} FROM {table} ' + \
+              where + f' LIMIT {limit} OFFSET {offset}'
         return self.pure_select(sql)
 
     def insert(self, table: str, column_values: dict) -> None:

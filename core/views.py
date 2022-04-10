@@ -4,7 +4,7 @@ from markupsafe import Markup
 
 from app import app
 from core.auth import auth_user
-from core.models import NoSmokingStages
+from core.models import NoSmokingStages, Blog
 from utils.utils import get_markdown
 
 
@@ -107,3 +107,18 @@ def utils_no_smoking():
 
     return render_template('utils/no_smoking.html', data_out=data_out,
                            no_smoking_db=model.get_stages())
+
+
+@app.route('/blog')
+def blog():
+    # q = request.args.get('q')
+    # if q:
+    #     posts = Post.query.filter(Post.title.contains(q) |
+    #                               Post.intro.contains(q) |
+    #                               Post.text.contains(q)).order_by(Post.date.desc())
+    # else:
+    #     posts = Post.query.order_by(Post.date.desc())
+    page = request.args.get('page')
+    page = int(page) if page and page.isdigit() else 1
+
+    return render_template('blog/index.html', blog=Blog(page))
