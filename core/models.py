@@ -1,4 +1,5 @@
 import math
+from typing import List
 
 from utils.sqlite_wrap import SQLite3Instance
 from config import DataBase
@@ -50,12 +51,13 @@ class NoSmokingStages(BaseModel):
 
 
 class Blog(BaseModel):
-    def __init__(self, page):
+    def __init__(self, page=1, post_id=1):
         super().__init__()
         self.current_page = page
+        self.current_post_id = post_id
 
         self.table_name = 'main_blog'
-        self.table_columns = ['icon', 'title', 'intro', 'text', 'date']
+        self.table_columns = ['id', 'icon', 'title', 'intro', 'text', 'date']
         self.posts_per_page = 10
 
         self.pages_count = self._get_pages_count()
@@ -66,21 +68,29 @@ class Blog(BaseModel):
 
         return math.ceil(posts_count['count(1)'] / self.posts_per_page)
 
+    @staticmethod
+    def _date_fmt(posts: List[dict]):
+        for post in posts:
+            dt = post['date'].split('.')[0]
+            time_obj = datetime.strptime(dt, '%Y-%m-%d %H:%M:%S')
+            post['date'] = time_obj.strftime('%d-%m-%y')
+        return posts
+
+    def get_post(self):
+        return self._date_fmt(self.db.select(
+            table=self.table_name,
+            columns=self.table_columns,
+            where=f'WHERE id={self.current_post_id}'
+        ))[0]
+
     def get_posts(self):
-        posts = self.db.select_limit(
+        return self._date_fmt(self.db.select_limit(
             table=self.table_name,
             columns=self.table_columns,
             where='order by date desc',
             limit=self.posts_per_page,
             offset=self.posts_per_page * (self.current_page - 1)
-        )
-
-        for post in posts:
-            dt = post['date'].split('.')[0]
-            time_obj = datetime.strptime(dt, '%Y-%m-%d %H:%M:%S')
-            post['date'] = time_obj.strftime('%d-%m-%y')
-
-        return posts
+        ))
 
     def has_next_page(self):
         return self.current_page < self.pages_count

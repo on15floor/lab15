@@ -111,14 +111,12 @@ def utils_no_smoking():
 
 @app.route('/blog')
 def blog():
-    # q = request.args.get('q')
-    # if q:
-    #     posts = Post.query.filter(Post.title.contains(q) |
-    #                               Post.intro.contains(q) |
-    #                               Post.text.contains(q)).order_by(Post.date.desc())
-    # else:
-    #     posts = Post.query.order_by(Post.date.desc())
     page = request.args.get('page')
     page = int(page) if page and page.isdigit() else 1
+    return render_template('blog/index.html', blog=Blog(page=page))
 
-    return render_template('blog/index.html', blog=Blog(page))
+
+@app.route('/blog/<int:post_id>')
+def blog_post(post_id):
+    return render_template('blog/post.html', post=Blog(post_id=post_id).get_post())
+

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Блог > {{ post.title }}{% endblock %}
+
+{% block body %}
+<div class="container pt-5 my-3 p-3 rounded shadow-sm container-theme">
+    <div class="media pt-3">
+        <figure>
+            <img src="{{ post.icon }}" width="64" height="64" alt="icon">
+            <div class="small text-center">
+                {{ post.date }}
+            </div>
+        </figure>
+        <p class="media-body pb-3 pl-3 mb-0 border-bottom">
+            <strong class="d-block">{{ post.title }}</strong>
+            {{ post.intro }}
+        </p>
+    </div>
+    <div class="alert my-3 alert-theme">
+        <p>{{ post.text|safe }}</p>
+        <a href="/blog" class="btn btn-info">Назад</a>
+        {% if current_user.is_authenticated %}
+            <a href="/blog/{{ post.id }}/del" class="btn btn-danger">Del</a>
+            <a href="/blog/{{ post.id }}/update" class="btn btn-success">Edit</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
