@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-{% load percent_left %}
 {% block title %}Без сигарет{% endblock %}
 
 {% block body %}
@@ -11,7 +10,6 @@
         риск рака, болезней сердца, легких и других малоприятных последствий этой пагубной привычки.</div>
 
     <form method="post">
-        {% csrf_token %}
         <div class="row">
             <div class="col-md-6 mb-3">
                 <div class="input-group mb-2">
@@ -58,7 +56,7 @@
     <div class="row row-cols-1 row-cols-md-3">
         {% for el in no_smoking_db %}
         <div class="col mb-4">
-            {% if data_out.time_stop|percent_left:el.time == 100 %}
+            {% if data_out.time_stop|percent_left(el.time) == 100 %}
             <div class="card h-100 border-primary card-theme">
                 <div class="card-body">
                     <h6 class="card-title">{{ el.name }} ({{ el.time_descr }})</h6>
@@ -72,10 +70,10 @@
             <div class="card h-100 border-warning card-theme">
                 <div class="card-body">
                     <h6 class="card-title">{{ el.name }} ({{ el.time_descr }})</h6>
-                    <p class="small text-muted">{{ el.text }} <strong>(~{{ data_out.time_stop|percent_left:el.time }}%)</strong></p>
+                    <p class="small text-muted">{{ el.text }} <strong>(~{{ data_out.time_stop|percent_left(el.time) }}%)</strong></p>
                     <div class="progress" style="height: 5px;">
                         <div class="progress-bar bg-danger" role="progressbar"
-                             style="width:{{ data_out.time_stop|percent_left:el.time }}%">
+                             style="width:{{ data_out.time_stop|percent_left(el.time) }}%">
                         </div>
                     </div>
                 </div>

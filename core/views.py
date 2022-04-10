@@ -4,6 +4,7 @@ from markupsafe import Markup
 
 from app import app
 from core.auth import auth_user
+from core.models import NoSmokingStages
 from utils.utils import get_markdown
 
 
@@ -90,5 +91,19 @@ def utils_converter():
 
 @app.route('/utils/no_smoking', methods=['GET', 'POST'])
 def utils_no_smoking():
+    data_out = dict()
+    model = NoSmokingStages()
+
     if request.method == 'GET':
-        return render_template('signin.html')
+        data_out = model.get_statistic('2008-02-01', '2021-08-30', 50, 150)
+
+    if request.method == 'POST':
+        data_out = model.get_statistic(
+            request.form['in_start_day'],
+            request.form['in_stop_day'],
+            int(request.form['in_price_start']),
+            int(request.form['in_price_stop'])
+        )
+
+    return render_template('utils/no_smoking.html', data_out=data_out,
+                           no_smoking_db=model.get_stages())
