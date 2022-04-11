@@ -108,6 +108,16 @@ class Blog(BaseModel):
             where=f'WHERE id={self.current_post_id}'
         )
 
+    def update_post(self, icon, title, intro, text):
+        post = {
+            'icon': icon,
+            'title': title,
+            'intro': intro,
+            'text': text,
+        }
+        self.db.update(table=self.table_name, column_values=post,
+                       where=f'WHERE id={self.current_post_id}')
+
     def has_next_page(self):
         return self.current_page < self.pages_count
 

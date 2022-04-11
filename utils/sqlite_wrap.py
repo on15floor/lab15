@@ -22,8 +22,8 @@ class SQLite3Instance:
     def select_limit(self, table: str, columns: List[str], where: str,
                      offset: int, limit: int) -> List[dict]:
         columns_joined = ', '.join(columns) if columns else '*'
-        sql = f'SELECT {columns_joined} FROM {table} ' + \
-              where + f' LIMIT {limit} OFFSET {offset}'
+        sql = f'SELECT {columns_joined} FROM {table} ' \
+              f'{where} LIMIT {limit} OFFSET {offset}'
         return self.pure_select(sql)
 
     def insert(self, table: str, column_values: dict) -> None:
@@ -35,6 +35,12 @@ class SQLite3Instance:
         self.con.commit()
 
     def delete(self, table: str, where: str) -> None:
-        sql = f'DELETE FROM {table} ' + where
-        self.cur.execute(sql)
+        self.cur.execute(f'DELETE FROM {table} {where}')
+        self.con.commit()
+
+    def update(self, table: str, column_values: dict, where: str) -> None:
+        placeholders = ', '.join([f'{k} = ?' for k in column_values.keys()])
+        values = [tuple(column_values.values())]
+        sql = f'UPDATE {table} SET {placeholders} {where}'
+        self.cur.executemany(sql, values)
         self.con.commit()

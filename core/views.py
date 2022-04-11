@@ -112,7 +112,7 @@ def blog():
 
 @app.route('/blog/create', methods=['POST', 'GET'])
 @login_required
-def blog_post_create():
+def blog_create():
     if request.method == 'GET':
         return render_template('blog/post_edit.html')
 
@@ -135,3 +135,18 @@ def blog_post(post_id):
 def blog_post_del(pos_id):
     Blog(post_id=pos_id).delete_post()
     return redirect('/blog')
+
+
+@app.route('/blog/<int:post_id>/update', methods=['POST', 'GET'])
+@login_required
+def blog_post_update(post_id):
+    if request.method == 'GET':
+        return render_template('blog/post_edit.html', post=Blog(post_id=post_id).get_post())
+
+    Blog(post_id=post_id).update_post(
+        icon=request.form['icon'],
+        title=request.form['title'],
+        intro=request.form['intro'],
+        text=request.form['text']
+    )
+    return redirect(f'/blog/{post_id}')
