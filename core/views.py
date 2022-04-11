@@ -7,7 +7,6 @@ from core.auth import auth_user
 from core.models import NoSmokingStages, Blog
 from utils.utils import get_markdown
 
-
 UNITY_GAMES = ('simple_cube', 'delimiter', 'kot_guide')
 HINTS = ('bash', 'git', 'markdown', 'python', 'sql', 'vim')
 
@@ -110,6 +109,11 @@ def blog():
     return render_template('blog/index.html', blog=Blog(page=page))
 
 
+@app.route('/blog/<int:post_id>')
+def blog_post(post_id):
+    return render_template('blog/post.html', post=Blog(post_id=post_id).get_post())
+
+
 @app.route('/blog/create', methods=['POST', 'GET'])
 @login_required
 def blog_create():
@@ -123,11 +127,6 @@ def blog_create():
         text=request.form['text']
     )
     return redirect('/blog')
-
-
-@app.route('/blog/<int:post_id>')
-def blog_post(post_id):
-    return render_template('blog/post.html', post=Blog(post_id=post_id).get_post())
 
 
 @app.route('/blog/<int:pos_id>/del')
