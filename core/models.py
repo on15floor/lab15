@@ -1,9 +1,10 @@
 import math
+from datetime import datetime
 from typing import List
 
-from utils.sqlite_wrap import SQLite3Instance
+import core.hardcode
 from config import DataBase
-from datetime import datetime
+from utils.sqlite_wrap import SQLite3Instance
 
 
 class BaseModel:
@@ -135,3 +136,32 @@ class Blog(BaseModel):
 
     def get_page(self):
         return self.current_page
+
+
+class Chrods(BaseModel):
+    def __init__(self, instrument):
+        super().__init__()
+        self.table_name = 'main_chords'
+        self.table_columns = ['id', 'instrument', 'song_text', 'date', 'song_name']
+        self.instrument_map = {'guitar': 'Гитара',
+                               'ukulele': 'Укулеле'}
+        self.instrument = instrument
+
+    def get_songs(self):
+        return self.db.select(
+            table=self.table_name,
+            columns=self.table_columns,
+            where=f'where instrument="{self.instrument}" order by song_name')
+
+    def get_song_chords(self, song_id):
+        song_text = self.db.select(
+            table=self.table_name,
+            columns=['song_text'],
+            where=f'where id={song_id}'
+        )
+        chords = song_text[0]['song_text']
+        chords_set = set(chords.split()) & core.hardcode.chords
+        return ', '.join(chords_set)
+
+    def get_instrument_name_rus(self):
+        return self.instrument_map[self.instrument]

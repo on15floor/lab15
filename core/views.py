@@ -4,11 +4,12 @@ from markupsafe import Markup
 
 from app import app
 from core.auth import auth_user
-from core.models import NoSmokingStages, Blog
+from core.models import NoSmokingStages, Blog, Chrods
 from utils.utils import get_markdown
 
 UNITY_GAMES = ('simple_cube', 'delimiter', 'kot_guide')
 HINTS = ('bash', 'git', 'markdown', 'python', 'sql', 'vim')
+MUSIC_INSTRUMENT = ('ukulele', 'guitar')
 
 
 @app.route('/')
@@ -149,3 +150,10 @@ def blog_post_update(post_id):
         text=request.form['text']
     )
     return redirect(f'/blog/{post_id}')
+
+
+@app.route('/chords/<string:instrument>')
+def chords(instrument):
+    if instrument in MUSIC_INSTRUMENT:
+        return render_template('chords/index.html', chords=Chrods(instrument))
+    abort(404)
