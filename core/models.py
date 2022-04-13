@@ -10,6 +10,25 @@ from utils.sqlite_wrap import SQLite3Instance
 class BaseModel:
     def __init__(self):
         self.db = SQLite3Instance(DataBase.SQL_MAIN)
+        self.table_name = str()
+        self.table_columns = list()
+
+    def select_from_db(self, columns=None, where='order by id'):
+        columns_needed = self.table_columns if columns is None else columns
+        return self.db.select(
+            table=self.table_name,
+            columns=columns_needed,
+            where=where)
+
+    def select_limit_from_db(self, columns='*', where='order by id',
+                             limit=0, offset=0):
+        columns_needed = columns if columns == '*' else self.table_columns
+        return self.db.select_limit(
+            table=self.table_name,
+            columns=columns_needed,
+            where=where,
+            limit=limit,
+            offset=offset)
 
 
 class NoSmokingStages(BaseModel):
@@ -19,10 +38,7 @@ class NoSmokingStages(BaseModel):
         self.table_columns = ['name', 'time', 'time_descr', 'text']
 
     def get_stages(self):
-        return self.db.select(
-            table=self.table_name,
-            columns=self.table_columns,
-            where='order by id')
+        return self.select_from_db()
 
     @staticmethod
     def get_statistic(time_start: str, time_stop: str,
@@ -70,28 +86,26 @@ class Blog(BaseModel):
         return math.ceil(posts_count['count(1)'] / self.posts_per_page)
 
     @staticmethod
-    def _date_fmt(posts: List[dict]):
+    def _fix_date_fmt(posts: List[dict]):
         for post in posts:
             dt = post['date'].split('.')[0]
             time_obj = datetime.strptime(dt, '%Y-%m-%d %H:%M:%S')
             post['date'] = time_obj.strftime('%d-%m-%y')
-        return posts
+        if len(posts) != 1:
+            return posts
+        return posts[0]
 
     def get_post(self):
-        return self._date_fmt(self.db.select(
-            table=self.table_name,
-            columns=self.table_columns,
-            where=f'WHERE id={self.current_post_id}'
-        ))[0]
+        post = self.select_from_db(where=f'WHERE id={self.current_post_id}')
+        return self._fix_date_fmt(post)
 
     def get_posts(self):
-        return self._date_fmt(self.db.select_limit(
-            table=self.table_name,
-            columns=self.table_columns,
+        posts = self.select_limit_from_db(
             where='order by date desc',
             limit=self.posts_per_page,
             offset=self.posts_per_page * (self.current_page - 1)
-        ))
+        )
+        return self._fix_date_fmt(posts)
 
     def commit_post(self, icon, title, intro, text):
         post = {
@@ -148,14 +162,11 @@ class Chrods(BaseModel):
         self.instrument = instrument
 
     def get_songs(self):
-        return self.db.select(
-            table=self.table_name,
-            columns=self.table_columns,
+        return self.select_from_db(
             where=f'where instrument="{self.instrument}" order by song_name')
 
     def get_song_chords(self, song_id):
-        song_text = self.db.select(
-            table=self.table_name,
+        song_text = self.select_from_db(
             columns=['song_text'],
             where=f'where id={song_id}'
         )
