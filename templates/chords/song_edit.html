@@ -8,14 +8,19 @@
         <form method="post">
             <div class="input-group mb-3">
                 <select class="form-control" name="instrument" id="instrument">
-                    <option value="guitar" selected>Гитара</option>
-                    <option value="ukulele">Укулеле</option>
+                    {% if song %}
+                        <option value="guitar" {% if song.instrument=='guitar' %}selected{% endif %}>Гитара</option>
+                        <option value="ukulele" {% if song.instrument=='ukulele' %}selected{% endif %}>Укулеле</option>
+                    {% else %}
+                        <option value="guitar" selected>Гитара</option>
+                        <option value="ukulele">Укулеле</option>
+                    {% endif %}
                 </select>
             </div>
             <input type="text" name="song_name" id="song_name" class="form-control"
-                   placeholder="Введите название песни"><br>
-            <textarea name="song_text" id="song_text" class="form-control text-monospace"
-                      placeholder="Введите текст песни" rows="10"></textarea><br>
+                   placeholder="Введите название песни" {% if song %} value="{{ song.song_name }}" {% endif %}><br>
+            <textarea name="song_text" id="song_text" class="form-control text-monospace" rows="10"
+                      placeholder="Введите текст песни">{% if song %}{{ song.song_text }}{% endif %}</textarea><br>
             <input type="submit" class="btn btn-success" value="Отправить"><br>
         </form>
     </div>

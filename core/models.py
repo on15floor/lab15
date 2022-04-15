@@ -199,3 +199,11 @@ class Chrods(BaseModel):
             'date': datetime.now()
         }
         self.insert_to_db(values=song)
+
+    def update_song(self, song_id, instrument, song_name, song_text):
+        song = {
+            'instrument': instrument,
+            'song_name': song_name,
+            'song_text': song_text
+        }
+        self.update_to_db(values=song, where=f'WHERE id={song_id}')
