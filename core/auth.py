@@ -1,7 +1,7 @@
 from flask_login import LoginManager, UserMixin
 
 from config import Config
-from utils import crypt
+from utils.utils import check_pw
 
 USERS = {Config.FLASK_ADMIN: {'password': Config.FLASK_ADMIN_PWD}}
 
@@ -36,7 +36,7 @@ class Init:
 
 
 def auth_user(username: str, password: str) -> User:
-    if username in USERS and crypt.check_pw(password, USERS[username]['password']):
+    if username in USERS and check_pw(password, USERS[username]['password']):
         user = User()
         user.id = username
         return user
