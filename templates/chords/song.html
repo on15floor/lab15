@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Аккорды > {{ song.song_name }}{% endblock %}
+
+{% block body %}
+<div class="container pt-5 my-3 rounded shadow-sm container-theme">
+    <h4 class="border-bottom pb-2 mb-2">{{ song.song_name }}
+    {% if current_user.is_authenticated %}
+        <a href="/chrods/{{ song.id }}/update" class="btn btn-success btn-sm">Edit</a>
+        <a href="/chrods/{{ song.id }}/del" class="btn btn-danger btn-sm">Del</a>
+    {% endif %}
+    </h4>
+
+    <div>
+        {% for chord in song.chords %}
+            <img src="/static/img/chords/{{ song.instrument }}/{{ chord }}.png" alt="{{ chord }}" class="img-thumbnail">
+        {% endfor %}
+        <pre class="alert text-monospace alert-theme my-3">{{ song.song_text}}</pre>
+    </div>
+</div>
+{% endblock %}

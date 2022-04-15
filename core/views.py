@@ -155,5 +155,10 @@ def blog_post_update(post_id):
 @app.route('/chords/<string:instrument>')
 def chords(instrument):
     if instrument in MUSIC_INSTRUMENT:
-        return render_template('chords/index.html', chords=Chrods(instrument))
+        return render_template('chords/index.html', songs=Chrods(instrument))
     abort(404)
+
+
+@app.route('/chords/<int:song_id>')
+def chords_song(song_id):
+    return render_template('chords/song.html', song=Chrods().get_song(song_id))

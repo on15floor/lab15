@@ -3,13 +3,13 @@
 
 {% block body %}
 <div class="container pt-5 my-3 p-3 rounded shadow-sm container-theme">
-    <h4 class="border-bottom pb-2 mb-2 border-gray">Список аккордов ({{ chords.get_instrument_name_rus() }})</h4>
+    <h4 class="border-bottom pb-2 mb-2 border-gray">Список аккордов ({{ songs.get_instrument_name_rus() }})</h4>
     <table class="table table-hover table-striped table-bordered table-sm small text table-secondary">
         <tbody>
-        {% for song in chords.get_songs() %}
+        {% for song in songs.get_songs() %}
             <tr>
-                <td><a href=/chords/{{ song.id }}">{{ song.song_name }}</a>
-                [{{ chords.get_song_chords(song.id) }}]</td>
+                <td><a href="/chords/{{ song.id }}">{{ song.song_name }}</a>
+                [{{ song.chords }}]</td>
             </tr>
         {% endfor %}
         </tbody>

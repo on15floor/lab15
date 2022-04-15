@@ -20,6 +20,9 @@ class BaseModel:
             columns=columns_needed,
             where=where)
 
+    def select_from_db_one(self, columns=None, where='order by id'):
+        return self.select_from_db(columns, where)[0]
+
     def select_limit_from_db(self, columns='*', where='order by id',
                              limit=0, offset=0):
         columns_needed = columns if columns == '*' else self.table_columns
@@ -153,7 +156,7 @@ class Blog(BaseModel):
 
 
 class Chrods(BaseModel):
-    def __init__(self, instrument):
+    def __init__(self, instrument=''):
         super().__init__()
         self.table_name = 'main_chords'
         self.table_columns = ['id', 'instrument', 'song_text', 'date', 'song_name']
@@ -161,18 +164,22 @@ class Chrods(BaseModel):
                                'ukulele': 'Укулеле'}
         self.instrument = instrument
 
-    def get_songs(self):
-        return self.select_from_db(
-            where=f'where instrument="{self.instrument}" order by song_name')
-
-    def get_song_chords(self, song_id):
-        song_text = self.select_from_db(
-            columns=['song_text'],
-            where=f'where id={song_id}'
-        )
-        chords = song_text[0]['song_text']
-        chords_set = set(chords.split()) & core.hardcode.chords
-        return ', '.join(chords_set)
-
     def get_instrument_name_rus(self):
         return self.instrument_map[self.instrument]
+
+    def get_songs(self):
+        songs = self.select_from_db(
+            where=f'where instrument="{self.instrument}" order by song_name')
+        for song in songs:
+            song['chords'] = ', '.join(self.parse_chords(song['song_text']))
+        return songs
+
+    def get_song(self, song_id):
+        song = self.select_from_db_one(where=f'where id={song_id}')
+        song['chords'] = self.parse_chords(song['song_text'])
+        return song
+
+    @staticmethod
+    def parse_chords(text):
+        return set(text.split()) & core.hardcode.chords
+
