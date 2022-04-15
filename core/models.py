@@ -33,6 +33,15 @@ class BaseModel:
             limit=limit,
             offset=offset)
 
+    def delete_from_db(self, where: str):
+        self.db.delete(table=self.table_name, where=where)
+
+    def insert_to_db(self, values: dict):
+        self.db.insert(table=self.table_name, column_values=values)
+
+    def update_to_db(self, values: dict, where: str):
+        self.db.update(table=self.table_name, column_values=values, where=where)
+
 
 class NoSmokingStages(BaseModel):
     def __init__(self):
@@ -118,13 +127,10 @@ class Blog(BaseModel):
             'text': text,
             'date': datetime.now()
         }
-        self.db.insert(table=self.table_name, column_values=post)
+        self.insert_to_db(values=post)
 
     def delete_post(self):
-        self.db.delete(
-            table=self.table_name,
-            where=f'WHERE id={self.current_post_id}'
-        )
+        self.delete_from_db(where=f'WHERE id={self.current_post_id}')
 
     def update_post(self, icon, title, intro, text):
         post = {
@@ -133,8 +139,7 @@ class Blog(BaseModel):
             'intro': intro,
             'text': text,
         }
-        self.db.update(table=self.table_name, column_values=post,
-                       where=f'WHERE id={self.current_post_id}')
+        self.update_to_db(values=post, where=f'WHERE id={self.current_post_id}')
 
     def has_next_page(self):
         return self.current_page < self.pages_count
