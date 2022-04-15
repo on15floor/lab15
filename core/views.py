@@ -162,3 +162,24 @@ def chords(instrument):
 @app.route('/chords/<int:song_id>')
 def chords_song(song_id):
     return render_template('chords/song.html', song=Chrods().get_song(song_id))
+
+
+@app.route('/chords/<int:song_id>/del')
+@login_required
+def chords_song_del(song_id):
+    Chrods().delete_song(song_id=song_id)
+    return redirect(f'/chords/{MUSIC_INSTRUMENT[1]}')
+
+
+@app.route('/chords/create', methods=['POST', 'GET'])
+@login_required
+def chords_create():
+    if request.method == 'GET':
+        return render_template('chords/song_edit.html')
+
+    Chrods().commit_song(
+        instrument=request.form['instrument'],
+        song_name=request.form['song_name'],
+        song_text=request.form['song_text']
+    )
+    return redirect(f'/chords/{MUSIC_INSTRUMENT[1]}')

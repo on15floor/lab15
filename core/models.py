@@ -169,6 +169,10 @@ class Chrods(BaseModel):
                                'ukulele': 'Укулеле'}
         self.instrument = instrument
 
+    @staticmethod
+    def _parse_chords(text):
+        return set(text.split()) & core.hardcode.chords
+
     def get_instrument_name_rus(self):
         return self.instrument_map[self.instrument]
 
@@ -176,15 +180,22 @@ class Chrods(BaseModel):
         songs = self.select_from_db(
             where=f'where instrument="{self.instrument}" order by song_name')
         for song in songs:
-            song['chords'] = ', '.join(self.parse_chords(song['song_text']))
+            song['chords'] = ', '.join(self._parse_chords(song['song_text']))
         return songs
 
     def get_song(self, song_id):
         song = self.select_from_db_one(where=f'where id={song_id}')
-        song['chords'] = self.parse_chords(song['song_text'])
+        song['chords'] = self._parse_chords(song['song_text'])
         return song
 
-    @staticmethod
-    def parse_chords(text):
-        return set(text.split()) & core.hardcode.chords
+    def delete_song(self, song_id):
+        self.delete_from_db(where=f'WHERE id={song_id}')
 
+    def commit_song(self, instrument, song_name, song_text):
+        song = {
+            'instrument': instrument,
+            'song_name': song_name,
+            'song_text': song_text,
+            'date': datetime.now()
+        }
+        self.insert_to_db(values=song)
