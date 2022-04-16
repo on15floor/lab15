@@ -6,6 +6,7 @@ from app import app
 from core.auth import auth_user
 from core.models import NoSmokingStages, Blog, Chrods
 from utils.utils import get_markdown
+from utils.binance_wrap import Binance
 
 UNITY_GAMES = ('simple_cube', 'delimiter', 'kot_guide')
 HINTS = ('bash', 'git', 'markdown', 'python', 'sql', 'vim')
@@ -112,7 +113,8 @@ def blog():
 
 @app.route('/blog/<int:post_id>')
 def blog_post(post_id):
-    return render_template('blog/post.html', post=Blog(post_id=post_id).get_post())
+    return render_template('blog/post.html',
+                           post=Blog(post_id=post_id).get_post())
 
 
 @app.route('/blog/create', methods=['POST', 'GET'])
@@ -141,7 +143,8 @@ def blog_post_del(pos_id):
 @login_required
 def blog_post_update(post_id):
     if request.method == 'GET':
-        return render_template('blog/post_edit.html', post=Blog(post_id=post_id).get_post())
+        return render_template('blog/post_edit.html',
+                               post=Blog(post_id=post_id).get_post())
 
     Blog(post_id=post_id).update_post(
         icon=request.form['icon'],
@@ -199,3 +202,12 @@ def chords_song_update(song_id):
         song_text=request.form['song_text']
     )
     return redirect(f'/chords/{MUSIC_INSTRUMENT[1]}')
+
+
+@app.route('/money/crypto')
+@login_required
+def crypto():
+    binance = Binance()
+    return render_template('money/crypto.html',
+                           wallet=binance.get_wallet(),
+                           deposit=binance.get_deposits())

@@ -1,0 +1,276 @@
+{% extends 'base.html' %}
+{% block title %}Акции{% endblock %}
+
+{% block body %}
+<div class="container pt-5 my-3 p-3 rounded shadow-sm container-theme">
+    <h4 class="border-bottom pb-2 mb-2">Акции</h4>
+
+    <div class="accordion" id="accordionMoney">
+
+        <div class="card card-theme">
+            <div class="card-header" id="headingOne">
+                <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse"
+                        data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    Статистика
+                    {% if stats_br.profit >= 0 %}
+                    <strong class="text-success">[+ {{ stats_br.profit|add:stats_iis.profit|add:tax_plus }} руб.]</strong>
+                    {% else %}
+                    <strong class="text-danger">[- {{ stats_br.profit|add:stats_iis.profit|add:tax_plus }} руб.]</strong>
+                    {% endif %}
+                </button>
+            </div>
+            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionMoney">
+                <div class="card-body">
+                    <table class="table table-bordered table-sm small text">
+                        <thead class="thead-dark">
+                            <tr class="text-center">
+                                <th scope="col"></th>
+                                <th scope="col">$</th>
+                                <th scope="col">&#8381</th>
+                                <th scope="col">&#8721(&#8381)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-info">
+                                <td><strong>Пополнения</strong></td>
+                                <td>{{ stats_br.pay_in_usd|add:stats_iis.pay_in_usd }}</td>
+                                <td>{{ stats_br.pay_in_rub|add:stats_iis.pay_in_rub }}</td>
+                                <td>{{ stats_br.pay_in_sum|add:stats_iis.pay_in_sum }}</td>
+                            </tr>
+                            <tr class="bg-light">
+                                <td>БC</td>
+                                <td>{{ stats_br.pay_in_usd }}</td>
+                                <td>{{ stats_br.pay_in_rub }}</td>
+                                <td>{{ stats_br.pay_in_sum }}</td>
+                            </tr>
+                            <tr class="bg-light">
+                                <td>ИИС</td>
+                                <td>{{ stats_iis.pay_in_usd }}</td>
+                                <td>{{ stats_iis.pay_in_rub }}</td>
+                                <td>{{ stats_iis.pay_in_sum }}</td>
+                            </tr>
+                            <tr class="bg-info">
+                                <td><strong>Вывод</strong></td>
+                                <td>{{ stats_br.pay_out_usd|add:stats_iis.pay_out_usd }}</td>
+                                <td>{{ stats_br.pay_out_rub|add:stats_iis.pay_out_rub }}</td>
+                                <td>{{ stats_br.pay_out_sum|add:stats_iis.pay_out_sum }}</td>
+                            </tr>
+                            <tr class="bg-light">
+                                <td>БС</td>
+                                <td>{{ stats_br.pay_out_usd }}</td>
+                                <td>{{ stats_br.pay_out_rub }}</td>
+                                <td>{{ stats_br.pay_out_sum }}</td>
+                            </tr>
+                            <tr class="bg-light">
+                                <td>ИИС</td>
+                                <td>{{ stats_iis.pay_out_usd }}</td>
+                                <td>{{ stats_iis.pay_out_rub }}</td>
+                                <td>{{ stats_iis.pay_out_sum }}</td>
+                            </tr>
+                            <tr class="bg-info">
+                                <td><strong>Дивиденды</strong></td>
+                                <td>{{ stats_br.dividend_usd|add:stats_iis.dividend_usd }}</td>
+                                <td>{{ stats_br.dividend_rub|add:stats_iis.dividend_rub }}</td>
+                                <td>{{ stats_br.dividend_sum|add:stats_iis.dividend_sum }}</td>
+                            </tr>
+                            <tr class="bg-light">
+                                <td>БС</td>
+                                <td>{{ stats_br.dividend_usd }}</td>
+                                <td>{{ stats_br.dividend_rub }}</td>
+                                <td>{{ stats_br.dividend_sum }}</td>
+                            </tr>
+                            <tr class="bg-light">
+                                <td>ИИС</td>
+                                <td>{{ stats_iis.dividend_usd }}</td>
+                                <td>{{ stats_iis.dividend_rub }}</td>
+                                <td>{{ stats_iis.dividend_sum }}</td>
+                            </tr>
+                            <tr class="bg-info">
+                                <td><strong>Свободные</strong></td>
+                                <td>{{ stats_br.free_usd|add:stats_iis.free_usd }}</td>
+                                <td>{{ stats_br.free_rub|add:stats_iis.free_rub }}</td>
+                                <td>{{ stats_br.free_sum|add:stats_iis.free_sum }}</td>
+                            </tr>
+                            <tr class="bg-light">
+                                <td>БС</td>
+                                <td>{{ stats_br.free_usd }}</td>
+                                <td>{{ stats_br.free_rub }}</td>
+                                <td>{{ stats_br.free_sum }}</td>
+                            </tr>
+                            <tr class="bg-light">
+                                <td>ИИС</td>
+                                <td>{{ stats_iis.free_usd }}</td>
+                                <td>{{ stats_iis.free_rub }}</td>
+                                <td>{{ stats_iis.free_sum }}</td>
+                            </tr>
+                            <tr class="bg-info">
+                                <td><strong>Акции</strong></td>
+                                <td>{{ stats_br.stocks_usd|add:stats_iis.stocks_usd }}</td>
+                                <td>{{ stats_br.stocks_rub|add:stats_iis.stocks_rub }}</td>
+                                <td>{{ stats_br.stocks_sum|add:stats_iis.stocks_sum }}</td>
+                            </tr>
+                            <tr class="bg-light">
+                                <td>БС</td>
+                                <td>{{ stats_br.stocks_usd }}</td>
+                                <td>{{ stats_br.stocks_rub }}</td>
+                                <td>{{ stats_br.stocks_sum }}</td>
+                            </tr>
+                            <tr class="bg-light">
+                                <td>ИИС</td>
+                                <td>{{ stats_iis.stocks_usd }}</td>
+                                <td>{{ stats_iis.stocks_rub }}</td>
+                                <td>{{ stats_iis.stocks_sum }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card card-theme">
+            <div class="card-header" id="headingTwo">
+                <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse"
+                        data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    Брокерский счет
+                    {% if stats_br.profit >= 0 %}
+                    <strong class="text-success">[+ {{ stats_br.profit }} руб.]</strong>
+                    {% else %}
+                    <strong class="text-danger">[- {{ stats_br.profit }} руб.]</strong>
+                    {% endif %}
+                </button>
+            </div>
+            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionMoney">
+                <div class="card-body">
+                    <table class="table table-hover table-striped table-bordered table-sm small table-secondary">
+                        <thead class="thead-dark">
+                            <tr class="text-center">
+                                <th scope="col" width="4%">Tick</th>
+                                <th scope="col" width="50%">Company</th>
+                                <th scope="col" width="3%">&#8721</th>
+                                <th scope="col" width="10%">Price AVG</th>
+                                <th scope="col" width="10%">Price NOW</th>
+                                <th scope="col" width="10%">Total</th>
+                                <th scope="col" width="10%">Profit</th>
+                                <th scope="col" width="3%">$/&#8381</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for el in stocks_br %}
+                            <tr>
+                                <td><a href="https://www.tinkoff.ru/invest/stocks/{{ el.0 }}/" target="_blank">{{ el.0 }}</a></td>
+                                <td>{{ el.1 }}</td>
+                                <td>{{ el.2 }}</td>
+                                <td>{{ el.4 }}</td>
+                                <td>{{ el.5 }}</td>
+                                <td>{{ el.6 }}</td>
+                                {% if el.7 >= 0 %}
+                                <td class="bg-success">{{ el.7 }}</td>
+                                {% else %}
+                                <td class="bg-danger">{{ el.7 }}</td>
+                                {% endif %}
+                                <td>{{ el.3 }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card card-theme">
+            <div class="card-header" id="headingThree">
+                <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse"
+                        data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    Индивидуальный инвестиционный счет
+                    {% if stats_iis.profit >= 0 %}
+                    <strong class="text-success">[+ {{ stats_iis.profit }} руб.]</strong>
+                    {% else %}
+                    <strong class="text-danger">[{{ stats_iis.profit }} руб.]</strong>
+                    {% endif %}
+                </button>
+            </div>
+            <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionMoney">
+                <div class="card-body">
+                    <table class="table table-hover table-striped table-bordered table-sm small table-secondary">
+                        <thead class="thead-dark">
+                            <tr class="text-center">
+                                <th scope="col" width="4%">Tick</th>
+                                <th scope="col" width="50%">Company</th>
+                                <th scope="col" width="3%">&#8721</th>
+                                <th scope="col" width="10%">Price AVG</th>
+                                <th scope="col" width="10%">Price NOW</th>
+                                <th scope="col" width="10%">Total</th>
+                                <th scope="col" width="10%">Profit</th>
+                                <th scope="col" width="3%">$/&#8381</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for el in stocks_iis %}
+                            <tr>
+                                <td><a href="https://www.tinkoff.ru/invest/stocks/{{ el.0 }}/" target="_blank">{{ el.0 }}</a></td>
+                                <td>{{ el.1 }}</td>
+                                <td>{{ el.2 }}</td>
+                                <td>{{ el.4 }}</td>
+                                <td>{{ el.5 }}</td>
+                                <td>{{ el.6 }}</td>
+                                {% if el.7 >= 0 %}
+                                <td class="bg-success">{{ el.7 }}</td>
+                                {% else %}
+                                <td class="bg-danger">{{ el.7 }}</td>
+                                {% endif %}
+                                <td>{{ el.3 }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card card-theme">
+            <div class="card-header" id="headingFore">
+                <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse"
+                        data-target="#collapseFore" aria-expanded="false" aria-controls="collapseFore">
+                    Обмен валют (RUB-> USD)
+                    {% if operations_usd_profit >= 0 %}
+                    <strong class="text-success">[+ {{ operations_usd_profit }} руб.]</strong>
+                    {% else %}
+                    <strong class="text-danger">[{{ operations_usd_profit }} руб.]</strong>
+                    {% endif %}
+                </button>
+            </div>
+            <div id="collapseFore" class="collapse" aria-labelledby="headingFore" data-parent="#accordionMoney">
+                <div class="card-body">
+                    <table class="table table-hover table-striped table-bordered table-sm small table-secondary">
+                        <thead class="thead-dark">
+                            <tr class="text-center">
+                                <th scope="col">Date</th>
+                                <th scope="col">Amount</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Summa</th>
+                                <th scope="col">Profit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for el in operations_usd %}
+                            <tr>
+                                <td>{{ el.date }}</td>
+                                <td>{{ el.amount }}</td>
+                                <td>{{ el.price }}</td>
+                                <td>{{ el.total }}</td>
+                                {% if el.profit >= 0 %}
+                                <td class="bg-success">{{ el.profit }}</td>
+                                {% else %}
+                                <td class="bg-danger">{{ el.profit }}</td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
