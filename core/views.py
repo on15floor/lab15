@@ -7,6 +7,8 @@ from core.auth import auth_user
 from core.models import NoSmokingStages, Blog, Chrods
 from utils.utils import get_markdown
 from utils.binance_wrap import Binance
+from utils.tinkoff_wrap import Tinkoff
+
 
 UNITY_GAMES = ('simple_cube', 'delimiter', 'kot_guide')
 HINTS = ('bash', 'git', 'markdown', 'python', 'sql', 'vim')
@@ -206,8 +208,15 @@ def chords_song_update(song_id):
 
 @app.route('/money/crypto')
 @login_required
-def crypto():
+def money_crypto():
     binance = Binance()
     return render_template('money/crypto.html',
                            wallet=binance.get_wallet(),
                            deposit=binance.get_deposits())
+
+
+@app.route('/money/stocks')
+@login_required
+def money_stocks():
+    return render_template('money/stocks.html',
+                           portfolio=Tinkoff().get_portfolio())
