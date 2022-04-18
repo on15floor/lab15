@@ -1,6 +1,8 @@
 from datetime import datetime
-from config import Tokens, Vars
+
 import tinvest
+
+from config import Tokens, Vars
 
 
 API_SECRET = Tokens.TINKOFF_SECRET_KEY

@@ -4,9 +4,10 @@ import json
 import time
 import urllib
 from urllib.parse import urlparse
-from config import Tokens
 
 import requests
+
+from config import Tokens
 
 
 API_URL = 'https://api.binance.com/'

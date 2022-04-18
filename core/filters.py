@@ -2,11 +2,6 @@ from app import app
 from datetime import datetime
 
 
-@app.template_filter('zfill')
-def zfill(value, width):
-    return str(value).zfill(width)
-
-
 @app.template_filter('percent_left')
 def percent_left(date_start: str, total_days):
     date_start = datetime.strptime(date_start, '%Y-%m-%d')
