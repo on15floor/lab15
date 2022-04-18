@@ -10,3 +10,8 @@ chords = {'A', 'A7', 'Am', 'Am7', 'Adim', 'Aaug', 'A6', 'Amaj7', 'A9',
           'F', 'F7', 'Fm', 'Fm7', 'Fdim', 'Faug', 'F6', 'Fmaj7', 'F9',
           'G', 'G7', 'Gm', 'Gm7', 'Gdim', 'Gaug', 'G6', 'Gmaj7', 'G9',
           'Gb', 'Gb7', 'Gbm', 'Gbm7', 'Gbdim', 'Gbaug', 'Gb6', 'Gbmaj7', 'Gb9'}
+
+no_smoking = {'time_start': '2008-02-01',
+              'time_stop': '2021-08-30',
+              'price_start': '50',
+              'price_stop': '150'}

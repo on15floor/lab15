@@ -2,7 +2,7 @@ import math
 from datetime import datetime
 from typing import List
 
-import core.hardcode
+from core import hardcode
 from config import DataBase
 from utils.sqlite_wrap import SQLite3Instance
 
@@ -53,11 +53,14 @@ class NoSmokingStages(BaseModel):
         return self.select_from_db()
 
     @staticmethod
-    def get_statistic(time_start: str, time_stop: str,
-                      price_start: int, price_stop: int) -> dict:
-        time_start = datetime.strptime(time_start, '%Y-%m-%d')
-        time_stop = datetime.strptime(time_stop, '%Y-%m-%d')
+    def get_statistic(context=None) -> dict:
         time_now = datetime.now()
+        data = context if context else hardcode.no_smoking
+
+        time_start = datetime.strptime(data.get('time_start'), '%Y-%m-%d')
+        time_stop = datetime.strptime(data.get('time_stop'), '%Y-%m-%d')
+        price_start = int(data.get('price_start'))
+        price_stop = int(data.get('price_stop'))
 
         days_smoking = time_stop - time_start
         days_no_smoking = time_now - time_stop
@@ -80,10 +83,9 @@ class NoSmokingStages(BaseModel):
 
 
 class Blog(BaseModel):
-    def __init__(self, page=1, post_id=1):
+    def __init__(self, page=1):
         super().__init__()
         self.current_page = page
-        self.current_post_id = post_id
 
         self.table_name = 'main_blog'
         self.table_columns = ['id', 'icon', 'title', 'intro', 'text', 'date']
@@ -107,8 +109,8 @@ class Blog(BaseModel):
             return posts
         return posts[0]
 
-    def get_post(self):
-        post = self.select_from_db(where=f'WHERE id={self.current_post_id}')
+    def get_post(self, post_id):
+        post = self.select_from_db(where=f'WHERE id={post_id}')
         return self._fix_date_fmt(post)
 
     def get_posts(self):
@@ -119,27 +121,17 @@ class Blog(BaseModel):
         )
         return self._fix_date_fmt(posts)
 
-    def commit_post(self, icon, title, intro, text):
-        post = {
-            'icon': icon,
-            'title': title,
-            'intro': intro,
-            'text': text,
-            'date': datetime.now()
-        }
-        self.insert_to_db(values=post)
+    def commit_post(self, context: dict):
+        context.pop('files')    # wtf?
+        context.update({'date': datetime.now()})
+        self.insert_to_db(values=context)
 
-    def delete_post(self):
-        self.delete_from_db(where=f'WHERE id={self.current_post_id}')
+    def delete_post(self, post_id):
+        self.delete_from_db(where=f'WHERE id={post_id}')
 
-    def update_post(self, icon, title, intro, text):
-        post = {
-            'icon': icon,
-            'title': title,
-            'intro': intro,
-            'text': text,
-        }
-        self.update_to_db(values=post, where=f'WHERE id={self.current_post_id}')
+    def update_post(self, post_id, context):
+        context.pop('files')    # wtf?
+        self.update_to_db(values=context, where=f'WHERE id={post_id}')
 
     def has_next_page(self):
         return self.current_page < self.pages_count
@@ -171,7 +163,7 @@ class Chrods(BaseModel):
 
     @staticmethod
     def _parse_chords(text):
-        return set(text.split()) & core.hardcode.chords
+        return set(text.split()) & hardcode.chords
 
     def get_instrument_name_rus(self):
         return self.instrument_map[self.instrument]
@@ -191,22 +183,12 @@ class Chrods(BaseModel):
     def delete_song(self, song_id):
         self.delete_from_db(where=f'WHERE id={song_id}')
 
-    def commit_song(self, instrument, song_name, song_text):
-        song = {
-            'instrument': instrument,
-            'song_name': song_name,
-            'song_text': song_text,
-            'date': datetime.now()
-        }
-        self.insert_to_db(values=song)
+    def commit_song(self, context):
+        context.update({'date': datetime.now()})
+        self.insert_to_db(values=context)
 
-    def update_song(self, song_id, instrument, song_name, song_text):
-        song = {
-            'instrument': instrument,
-            'song_name': song_name,
-            'song_text': song_text
-        }
-        self.update_to_db(values=song, where=f'WHERE id={song_id}')
+    def update_song(self, song_id, context):
+        self.update_to_db(values=context, where=f'WHERE id={song_id}')
 
     def search(self, q):
         songs = self.select_from_db(

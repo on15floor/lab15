@@ -14,26 +14,26 @@
             <div class="col-md-6 mb-3">
                 <div class="input-group mb-2">
                     <div class="input-group-prepend"><div class="input-group-text">Start Day</div></div>
-                    <input type="text" class="form-control" name="in_start_day" placeholder={{data_out.time_start}}>
+                    <input type="text" class="form-control" name="time_start" placeholder={{data.time_start}}>
                 </div>
             </div>
             <div class="col-md-6 mb-3">
                 <div class="input-group mb-2">
                     <div class="input-group-prepend"><div class="input-group-text">Stop Day</div></div>
-                    <input type="text" class="form-control" name="in_stop_day" placeholder={{data_out.time_stop}}>
+                    <input type="text" class="form-control" name="time_stop" placeholder={{data.time_stop}}>
                 </div>
             </div>
             <div class="col-md-6 mb-3">
                 <div class="input-group mb-2">
                     <div class="input-group-prepend"><div class="input-group-text">Start Price</div></div>
-                    <input type="text" class="form-control" name="in_price_start" placeholder={{data_out.price_start}}>
+                    <input type="text" class="form-control" name="price_start" placeholder={{data.price_start}}>
                     <div class="input-group-append"><span class="input-group-text">&#8381</span></div>
                 </div>
             </div>
             <div class="col-md-6 mb-3">
                 <div class="input-group mb-2">
                     <div class="input-group-prepend"><div class="input-group-text">Stop Price</div></div>
-                    <input type="text" class="form-control" name="in_price_stop" placeholder={{data_out.price_stop}}>
+                    <input type="text" class="form-control" name="price_stop" placeholder={{data.price_stop}}>
                     <div class="input-group-append"><span class="input-group-text">&#8381</span></div>
                 </div>
             </div>
@@ -44,11 +44,11 @@
     <div class="alter my-3 p-3 pt-3 alert-theme" role="alert">
         <h6>Немного цифр (из расчета пачка сигарет/день):</h6>
         <ul>
-            <li>Вы курили <strong>{{data_out.days_smoking}}</strong>
-                дней и при этом потратили примерно <strong>{{data_out.money_spent}}</strong> руб.;
+            <li>Вы курили <strong>{{data.days_smoking}}</strong>
+                дней и при этом потратили примерно <strong>{{data.money_spent}}</strong> руб.;
             </li>
-            <li>А теперь, догоняйте! Уже не курите <strong>{{data_out.days_no_smoking}}</strong>
-                дней и сохранено <strong>{{data_out.money_saved}}</strong> руб.
+            <li>А теперь, догоняйте! Уже не курите <strong>{{data.days_no_smoking}}</strong>
+                дней и сохранено <strong>{{data.money_saved}}</strong> руб.
             </li>
         </ul>
     </div>
@@ -56,7 +56,7 @@
     <div class="row row-cols-1 row-cols-md-3">
         {% for el in no_smoking_db %}
         <div class="col mb-4">
-            {% if data_out.time_stop|percent_left(el.time) == 100 %}
+            {% if data.time_stop|percent_left(el.time) == 100 %}
             <div class="card h-100 border-primary card-theme">
                 <div class="card-body">
                     <h6 class="card-title">{{ el.name }} ({{ el.time_descr }})</h6>
@@ -70,10 +70,10 @@
             <div class="card h-100 border-warning card-theme">
                 <div class="card-body">
                     <h6 class="card-title">{{ el.name }} ({{ el.time_descr }})</h6>
-                    <p class="small text-muted">{{ el.text }} <strong>(~{{ data_out.time_stop|percent_left(el.time) }}%)</strong></p>
+                    <p class="small text-muted">{{ el.text }} <strong>(~{{ data.time_stop|percent_left(el.time) }}%)</strong></p>
                     <div class="progress" style="height: 5px;">
                         <div class="progress-bar bg-danger" role="progressbar"
-                             style="width:{{ data_out.time_stop|percent_left(el.time) }}%">
+                             style="width:{{ data.time_stop|percent_left(el.time) }}%">
                         </div>
                     </div>
                 </div>

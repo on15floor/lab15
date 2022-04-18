@@ -88,22 +88,14 @@ def utils_converter():
 
 @app.route('/utils/no_smoking', methods=['GET', 'POST'])
 def utils_no_smoking():
-    data_out = dict()
-    model = NoSmokingStages()
+    obj = NoSmokingStages()
 
-    if request.method == 'GET':
-        data_out = model.get_statistic('2008-02-01', '2021-08-30', 50, 150)
+    data = obj.get_statistic() \
+        if request.method == 'GET' \
+        else obj.get_statistic(dict(list(request.form.items())))
 
-    if request.method == 'POST':
-        data_out = model.get_statistic(
-            request.form['in_start_day'],
-            request.form['in_stop_day'],
-            int(request.form['in_price_start']),
-            int(request.form['in_price_stop'])
-        )
-
-    return render_template('utils/no_smoking.html', data_out=data_out,
-                           no_smoking_db=model.get_stages())
+    return render_template('utils/no_smoking.html', data=data,
+                           no_smoking_db=obj.get_stages())
 
 
 @app.route('/blog')
@@ -115,8 +107,8 @@ def blog():
 
 @app.route('/blog/<int:post_id>')
 def blog_post(post_id):
-    return render_template('blog/post.html',
-                           post=Blog(post_id=post_id).get_post())
+    post = Blog().get_post(post_id)
+    return render_template('blog/post.html', post=post)
 
 
 @app.route('/blog/create', methods=['POST', 'GET'])
@@ -125,19 +117,15 @@ def blog_create():
     if request.method == 'GET':
         return render_template('blog/post_edit.html')
 
-    Blog().commit_post(
-        icon=request.form['icon'],
-        title=request.form['title'],
-        intro=request.form['intro'],
-        text=request.form['text']
-    )
+    context = dict(list(request.form.items()))
+    Blog().commit_post(context)
     return redirect('/blog')
 
 
 @app.route('/blog/<int:pos_id>/del')
 @login_required
 def blog_post_del(pos_id):
-    Blog(post_id=pos_id).delete_post()
+    Blog().delete_post(pos_id)
     return redirect('/blog')
 
 
@@ -146,14 +134,10 @@ def blog_post_del(pos_id):
 def blog_post_update(post_id):
     if request.method == 'GET':
         return render_template('blog/post_edit.html',
-                               post=Blog(post_id=post_id).get_post())
+                               post=Blog().get_post(post_id))
 
-    Blog(post_id=post_id).update_post(
-        icon=request.form['icon'],
-        title=request.form['title'],
-        intro=request.form['intro'],
-        text=request.form['text']
-    )
+    context = dict(list(request.form.items()))
+    Blog().update_post(post_id, context)
     return redirect(f'/blog/{post_id}')
 
 
@@ -165,8 +149,8 @@ def chords(instrument):
         q = request.args.get('q')   # seraching
         songs = obj.search(q) if q else obj.get_songs()
 
-        return render_template(
-            'chords/index.html', songs=songs, instrument=instrument_name)
+        return render_template('chords/index.html',
+                               songs=songs, instrument=instrument_name)
     abort(404)
 
 
@@ -181,11 +165,8 @@ def chords_create():
     if request.method == 'GET':
         return render_template('chords/song_edit.html')
 
-    Chrods().commit_song(
-        instrument=request.form['instrument'],
-        song_name=request.form['song_name'],
-        song_text=request.form['song_text']
-    )
+    context = dict(list(request.form.items()))
+    Chrods().commit_song(context)
     return redirect(f'/chords/{MUSIC_INSTRUMENT[1]}')
 
 
@@ -203,12 +184,8 @@ def chords_song_update(song_id):
         return render_template('chords/song_edit.html',
                                song=Chrods().get_song(song_id))
 
-    Chrods().update_song(
-        song_id=song_id,
-        instrument=request.form['instrument'],
-        song_name=request.form['song_name'],
-        song_text=request.form['song_text']
-    )
+    context = dict(list(request.form.items()))
+    Chrods().update_song(song_id, context)
     return redirect(f'/chords/{MUSIC_INSTRUMENT[1]}')
 
 
