@@ -160,7 +160,13 @@ def blog_post_update(post_id):
 @app.route('/chords/<string:instrument>')
 def chords(instrument):
     if instrument in MUSIC_INSTRUMENT:
-        return render_template('chords/index.html', songs=Chrods(instrument))
+        obj = Chrods(instrument)
+        instrument_name = obj.get_instrument_name_rus()
+        q = request.args.get('q')   # seraching
+        songs = obj.search(q) if q else obj.get_songs()
+
+        return render_template(
+            'chords/index.html', songs=songs, instrument=instrument_name)
     abort(404)
 
 
@@ -220,3 +226,4 @@ def money_crypto():
 def money_stocks():
     return render_template('money/stocks.html',
                            portfolio=Tinkoff().get_portfolio())
+

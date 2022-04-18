@@ -207,3 +207,12 @@ class Chrods(BaseModel):
             'song_text': song_text
         }
         self.update_to_db(values=song, where=f'WHERE id={song_id}')
+
+    def search(self, q):
+        songs = self.select_from_db(
+            where=f'WHERE instrument="{self.instrument}" '
+                  f'AND song_name LIKE "%{q}%" '
+                  f'ORDER BY song_name')
+        for song in songs:
+            song['chords'] = ', '.join(self._parse_chords(song['song_text']))
+        return songs
