@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Дни рождения > Запись
+{% endblock %}
+
+{% block body %}
+<div class="container pt-5 my-3 p-3 rounded shadow-sm container-theme text-dark">
+    <h4>Детали дня рождения
+        {% if birthday %}<a href="/birthdays/{{ birthday.id }}/del"
+                            class="btn btn-danger">Удалить</a></h4>{% endif %}
+    <form method="post">
+
+        <input type="text" name="name" id="name" class="form-control"
+               placeholder="ФИО"
+                {% if birthday %} value="{{ birthday.name }}" {% endif %}><br>
+
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <div class="input-group-text">
+                    <input type="checkbox" id="male" name="male"
+                           {% if birthday and birthday.male == 1 %}checked{% endif %}>
+                </div>
+            </div>
+            <label class="form-control">Пол мужской</label>
+        </div>
+
+        <input type="date" id="birthdate" name="birthdate" class="form-control datetimepicker-input"
+               dataformatas="%Y-%m-%d" {% if birthday %} value="{{ birthday.birthdate }}" {% endif %}><br>
+
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <div class="input-group-text">
+                    <input type="checkbox" id="birthdate_checked" name="birthdate_checked"
+                           {% if birthday and birthday.birthdate_checked == 1 %}checked{% endif %}>
+                </div>
+            </div>
+            <label class="form-control">День рождения проверен</label>
+        </div>
+
+        <input type="text" name="comment" id="comment" class="form-control"
+               placeholder="Примечание"
+                {% if birthday %} value="{{ birthday.comment }}" {% endif %}><br>
+
+        <input type="submit" class="btn btn-success" value="Отправить"><br>
+    </form>
+</div>
+{% endblock %}

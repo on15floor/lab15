@@ -226,3 +226,20 @@ class Birthdays(BaseModel):
     def search(self, q):
         birthdays = self.select_from_db(where=f'WHERE name LIKE "%{q}%"')
         return self.update_age(birthdays)
+
+    def get_birthday(self, birthday_id):
+        song = self.select_from_db_one(where=f'WHERE id={birthday_id}')
+        return song
+
+    def commit_birthday(self, context):
+        context['male'] = bool(context.get('male', None))
+        context['birthdate_checked'] = bool(context.get('birthdate_checked', None))
+        self.insert_to_db(values=context)
+
+    def delete_birthday(self, birthday_id):
+        self.delete_from_db(where=f'WHERE id={birthday_id}')
+
+    def update_birthday(self, birthday_id, context):
+        context['male'] = bool(context.get('male', None))
+        context['birthdate_checked'] = bool(context.get('birthdate_checked', None))
+        self.update_to_db(values=context, where=f'WHERE id={birthday_id}')

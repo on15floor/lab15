@@ -212,3 +212,33 @@ def birthdays(scope):
     q = request.args.get('q')  # seraching
     data = obj.search(q) if q else obj.get_birthdays(scope)
     return render_template('birthdays/index.html', birthdays=data)
+
+
+@app.route('/birthdays/create', methods=['POST', 'GET'])
+@login_required
+def birthdays_create():
+    if request.method == 'GET':
+        return render_template('birthdays/bd_details.html')
+
+    context = dict(list(request.form.items()))
+    Birthdays().commit_birthday(context)
+    return redirect('/birthdays/month/')
+
+
+@app.route('/birthdays/<int:birthday_id>/del')
+@login_required
+def birthdays_del(birthday_id):
+    Birthdays().delete_birthday(birthday_id)
+    return redirect('/birthdays/month/')
+
+
+@app.route('/birthdays/<int:birthday_id>/update', methods=['POST', 'GET'])
+@login_required
+def birthdays_update(birthday_id):
+    if request.method == 'GET':
+        return render_template('birthdays/bd_details.html',
+                               birthday=Birthdays().get_birthday(birthday_id))
+
+    context = dict(list(request.form.items()))
+    Birthdays().update_birthday(birthday_id, context)
+    return redirect('/birthdays/month/')
