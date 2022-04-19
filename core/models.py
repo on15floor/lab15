@@ -12,26 +12,18 @@ class BaseModel:
         self.db = SQLite3Instance(DataBase.SQL_MAIN)
         self.table_name = str()
         self.table_columns = list()
+        self.order_by = 'ORDER BY id'
 
-    def select_from_db(self, columns=None, where='ORDER BY id'):
+    def select_from_db(self, columns=None, where=None):
         columns_needed = self.table_columns if columns is None else columns
+        condition = self.order_by if not where else f'{where} {self.order_by}'
         return self.db.select(
             table=self.table_name,
             columns=columns_needed,
-            where=where)
+            where=condition)
 
-    def select_from_db_one(self, columns=None, where='ORDER BY id'):
+    def select_from_db_one(self, columns=None, where=None):
         return self.select_from_db(columns, where)[0]
-
-    def select_limit_from_db(self, columns='*', where='ORDER BY id',
-                             limit=0, offset=0):
-        columns_needed = columns if columns == '*' else self.table_columns
-        return self.db.select_limit(
-            table=self.table_name,
-            columns=columns_needed,
-            where=where,
-            limit=limit,
-            offset=offset)
 
     def delete_from_db(self, where: str):
         self.db.delete(table=self.table_name, where=where)
@@ -85,10 +77,10 @@ class NoSmokingStages(BaseModel):
 class Blog(BaseModel):
     def __init__(self, page=1):
         super().__init__()
-        self.current_page = page
-
         self.table_name = 'main_blog'
         self.table_columns = ['id', 'icon', 'title', 'intro', 'text', 'date']
+
+        self.current_page = page
         self.posts_per_page = 10
 
         self.pages_count = self._get_pages_count()
@@ -114,11 +106,12 @@ class Blog(BaseModel):
         return self._fix_date_fmt(post)
 
     def get_posts(self):
-        posts = self.select_limit_from_db(
+        posts = self.db.select_limit(
+            table=self.table_name,
+            columns=self.table_columns,
             where='order by date desc',
             limit=self.posts_per_page,
-            offset=self.posts_per_page * (self.current_page - 1)
-        )
+            offset=self.posts_per_page * (self.current_page - 1))
         return self._fix_date_fmt(posts)
 
     def commit_post(self, context: dict):
@@ -157,8 +150,9 @@ class Chrods(BaseModel):
         super().__init__()
         self.table_name = 'main_chords'
         self.table_columns = ['id', 'instrument', 'song_text', 'date', 'song_name']
-        self.instrument_map = {'guitar': 'Гитара',
-                               'ukulele': 'Укулеле'}
+        self.order_by = 'ORDER BY song_name'
+
+        self.instrument_map = {'guitar': 'Гитара', 'ukulele': 'Укулеле'}
         self.instrument = instrument
 
     @staticmethod
@@ -170,7 +164,7 @@ class Chrods(BaseModel):
 
     def get_songs(self):
         songs = self.select_from_db(
-            where=f'WHERE instrument="{self.instrument}" ORDER BY song_name')
+            where=f'WHERE instrument="{self.instrument}"')
         for song in songs:
             song['chords'] = ', '.join(self._parse_chords(song['song_text']))
         return songs
@@ -193,8 +187,7 @@ class Chrods(BaseModel):
     def search(self, q):
         songs = self.select_from_db(
             where=f'WHERE instrument="{self.instrument}" '
-                  f'AND song_name LIKE "%{q}%" '
-                  f'ORDER BY song_name')
+                  f'AND song_name LIKE "%{q}%"')
         for song in songs:
             song['chords'] = ', '.join(self._parse_chords(song['song_text']))
         return songs
@@ -206,26 +199,26 @@ class Birthdays(BaseModel):
         self.table_name = 'main_birthdays'
         self.table_columns = ['id', 'name', 'male', 'birthdate',
                               'birthdate_checked', 'comment']
+        self.order_by = 'ORDER BY name'
 
     def get_birthdays(self, scope='all'):
-        order = 'ORDER BY name'
         if scope == 'all':
-            birthdays = self.select_from_db(where=order)
+            birthdays = self.select_from_db()
         else:
             scope_map = {
                 'month': f"strftime('%m',birthdate)=strftime('%m',date('now'))",
                 'w': f'male={False}',
                 'm': f'male={True}',
             }
-            where = f'WHERE {scope_map.get(scope)} {order}'
+            where = f'WHERE {scope_map.get(scope)}'
             birthdays = self.select_from_db(where=where)
 
-        for el in birthdays:
-            birthday_obj = datetime.strptime(el.get('birthdate'), '%Y-%m-%d')
-            el['age'] = self.get_age(birthday_obj.date())
-
-        return birthdays
+        return self.update_age(birthdays)
 
     @staticmethod
-    def get_age(birthdate):
-        return int((datetime.now().date() - birthdate).days / 365.25)
+    def update_age(birthdays):
+        for el in birthdays:
+            date_now = datetime.now().date()
+            birth_date = datetime.strptime(el['birthdate'], '%Y-%m-%d').date()
+            el['age'] = int((date_now - birth_date).days / 365.25)
+        return birthdays
