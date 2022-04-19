@@ -222,3 +222,7 @@ class Birthdays(BaseModel):
             birth_date = datetime.strptime(el['birthdate'], '%Y-%m-%d').date()
             el['age'] = int((date_now - birth_date).days / 365.25)
         return birthdays
+
+    def search(self, q):
+        birthdays = self.select_from_db(where=f'WHERE name LIKE "%{q}%"')
+        return self.update_age(birthdays)

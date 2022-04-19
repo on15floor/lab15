@@ -208,5 +208,7 @@ def money_stocks():
 @app.route('/birthdays/<scope>/')
 @login_required
 def birthdays(scope):
-    return render_template('birthdays/index.html',
-                           birthdays=Birthdays().get_birthdays(scope))
+    obj = Birthdays()
+    q = request.args.get('q')  # seraching
+    data = obj.search(q) if q else obj.get_birthdays(scope)
+    return render_template('birthdays/index.html', birthdays=data)
