@@ -13,17 +13,17 @@ class BaseModel:
         self.table_name = str()
         self.table_columns = list()
 
-    def select_from_db(self, columns=None, where='order by id'):
+    def select_from_db(self, columns=None, where='ORDER BY id'):
         columns_needed = self.table_columns if columns is None else columns
         return self.db.select(
             table=self.table_name,
             columns=columns_needed,
             where=where)
 
-    def select_from_db_one(self, columns=None, where='order by id'):
+    def select_from_db_one(self, columns=None, where='ORDER BY id'):
         return self.select_from_db(columns, where)[0]
 
-    def select_limit_from_db(self, columns='*', where='order by id',
+    def select_limit_from_db(self, columns='*', where='ORDER BY id',
                              limit=0, offset=0):
         columns_needed = columns if columns == '*' else self.table_columns
         return self.db.select_limit(
@@ -170,13 +170,13 @@ class Chrods(BaseModel):
 
     def get_songs(self):
         songs = self.select_from_db(
-            where=f'where instrument="{self.instrument}" order by song_name')
+            where=f'WHERE instrument="{self.instrument}" ORDER BY song_name')
         for song in songs:
             song['chords'] = ', '.join(self._parse_chords(song['song_text']))
         return songs
 
     def get_song(self, song_id):
-        song = self.select_from_db_one(where=f'where id={song_id}')
+        song = self.select_from_db_one(where=f'WHERE id={song_id}')
         song['chords'] = self._parse_chords(song['song_text'])
         return song
 
@@ -198,3 +198,34 @@ class Chrods(BaseModel):
         for song in songs:
             song['chords'] = ', '.join(self._parse_chords(song['song_text']))
         return songs
+
+
+class Birthdays(BaseModel):
+    def __init__(self):
+        super().__init__()
+        self.table_name = 'main_birthdays'
+        self.table_columns = ['id', 'name', 'male', 'birthdate',
+                              'birthdate_checked', 'comment']
+
+    def get_birthdays(self, scope='all'):
+        order = 'ORDER BY name'
+        if scope == 'all':
+            birthdays = self.select_from_db(where=order)
+        else:
+            scope_map = {
+                'month': f"strftime('%m',birthdate)=strftime('%m',date('now'))",
+                'w': f'male={False}',
+                'm': f'male={True}',
+            }
+            where = f'WHERE {scope_map.get(scope)} {order}'
+            birthdays = self.select_from_db(where=where)
+
+        for el in birthdays:
+            birthday_obj = datetime.strptime(el.get('birthdate'), '%Y-%m-%d')
+            el['age'] = self.get_age(birthday_obj.date())
+
+        return birthdays
+
+    @staticmethod
+    def get_age(birthdate):
+        return int((datetime.now().date() - birthdate).days / 365.25)

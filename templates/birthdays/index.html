@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Дни рождения{% endblock %}
+
+{% block body %}
+<div class="container pt-5 my-3 p-3 rounded shadow-sm container-theme">
+    <h4 class="border-bottom pb-2 mb-2">Дни рождения
+    <a href="/birthdays/month/" class="btn btn-success">Месяц</a>
+    <a href="/birthdays/all/" class="btn btn-warning">Все</a>
+    <a href="/birthdays/m/" class="btn btn-info">М</a>
+    <a href="/birthdays/w/" class="btn btn-primary">Ж</a></h4>
+    <table class="table table-hover table-striped table-bordered table-sm small table-secondary">
+        <thead class="thead-dark">
+            <tr class="text-center">
+                <th scope="col" width="50%">Имя</th>
+                <th scope="col" width="5%">Пол</th>
+                <th scope="col" width="10%">ДР</th>
+                <th scope="col" width="10%">Check</th>
+                <th scope="col" width="10%">Примечание</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for el in birthdays %}
+            <tr>
+                <td><a href="/birthdays/{{ el.id }}/update">[{{ el.age }}] {{ el.name }}</a></td>
+                <td class="text-center">
+                    {% if el.male == True %}
+                        <img src="/static/img/birthdays/male.png" alt="" width="15" height="15">
+                    {% else %}
+                        <img src="/static/img/birthdays/female.png" alt="" width="15" height="15">
+                    {% endif %}
+                </td>
+                <td class="text-center">{{ el.birthdate }}</td>
+                <td class="text-center">
+                    {% if el.birthdate_checked == True %}
+                        <img src="/static/img/birthdays/checked.png" alt="" width="15" height="15">
+                    {% else %}
+                        <img src="/static/img/birthdays/non_checked.png" alt="" width="15" height="15">
+                    {% endif %}
+                </td>
+                <td class="text-center">{{ el.comment }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

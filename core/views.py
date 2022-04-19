@@ -4,7 +4,7 @@ from markupsafe import Markup
 
 from app import app
 from core.auth import auth_user
-from core.models import NoSmokingStages, Blog, Chrods
+from core.models import NoSmokingStages, Blog, Chrods, Birthdays
 from utils.utils import get_markdown
 from utils.binance_wrap import Binance
 from utils.tinkoff_wrap import Tinkoff
@@ -204,3 +204,9 @@ def money_stocks():
     return render_template('money/stocks.html',
                            portfolio=Tinkoff().get_portfolio())
 
+
+@app.route('/birthdays/<scope>/')
+@login_required
+def birthdays(scope):
+    return render_template('birthdays/index.html',
+                           birthdays=Birthdays().get_birthdays(scope))
