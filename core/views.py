@@ -10,6 +10,7 @@ from utils.binance_wrap import Binance
 from utils.tinkoff_wrap import Tinkoff
 from utils.git import get_gitlog
 from utils.mongodb_wrap import MongoDB
+from utils.beget_wrap import Crontab
 
 
 UNITY_GAMES = ('simple_cube', 'delimiter', 'kot_guide')
@@ -263,3 +264,31 @@ def dashboard_mongolog(state):
         logs = mongo.get_logs_errors()
 
     return render_template('dashboard/mongologs.html', mongo_log=list(logs))
+
+
+@app.route('/dashboard/crontab/')
+@login_required
+def dashboard_crontab():
+    tasks = Crontab().tasks_get()
+    return render_template('dashboard/crontab.html', crontab_tasks=tasks)
+
+
+@app.route('/dashboard/crontab/<int:task_id>/del')
+@login_required
+def dashboard_crontab_del(task_id):
+    Crontab().task_del(task_id)
+    return redirect('/dashboard/crontab/')
+
+
+@app.route('/dashboard/crontab/<int:task_id>/stop')
+@login_required
+def dashboard_crontab_stop(task_id):
+    Crontab().task_change_state(task_id, 1)
+    return redirect('/dashboard/crontab/')
+
+
+@app.route('/dashboard/crontab/<int:task_id>/start')
+@login_required
+def dashboard_crontab_start(task_id):
+    Crontab().task_change_state(task_id, 0)
+    return redirect('/dashboard/crontab/')
