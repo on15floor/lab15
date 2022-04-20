@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard > MongoDBLog{% endblock %}
+{% block head %}
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+    <script>
+        $(function () {
+            $('[data-toggle="popover"]').popover()
+        })
+    </script>
+{% endblock %}
+
+{% block body %}
+    <div class="container pt-5 my-3 p-3 one-dark-dashboard-bg rounded shadow-sm small text-monospace one-dark-text-white">
+
+        {% include 'dashboard/navbar.html' %}
+
+        <div>
+        {% for log in mongo_log %}
+            <a href="#" data-container="body" data-toggle="popover" data-placement="bottom" data-content="{{ log }}">🔸️️</a>
+            <span class="one-dark-text-purple">[{{ log.date }}]</span>
+            {% if log.status == 'error' %}
+                <span class="one-dark-text-red">[_{{ log.status }}_]</span>
+            {% else %}
+                <span class="one-dark-text-green">[{{ log.status }}]</span>
+            {% endif %}
+            <span class="one-dark-text-blue">[{{ log.uri }}] - </span> <span>{{ log.message }}</span> <br />
+        {% endfor %}
+        </div>
+    </div>
+{% endblock %}

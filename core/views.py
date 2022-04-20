@@ -9,6 +9,7 @@ from utils.utils import get_markdown
 from utils.binance_wrap import Binance
 from utils.tinkoff_wrap import Tinkoff
 from utils.git import get_gitlog
+from utils.mongodb_wrap import MongoDB
 
 
 UNITY_GAMES = ('simple_cube', 'delimiter', 'kot_guide')
@@ -206,7 +207,7 @@ def money_stocks():
                            portfolio=Tinkoff().get_portfolio())
 
 
-@app.route('/birthdays/<scope>/')
+@app.route('/birthdays/<string:scope>/')
 @login_required
 def birthdays(scope):
     obj = Birthdays()
@@ -249,3 +250,16 @@ def birthdays_update(birthday_id):
 @login_required
 def dashboard_gitlog():
     return render_template('dashboard/gitlog.html', git_log=get_gitlog())
+
+
+@app.route('/dashboard/mongolog/<string:state>')
+@login_required
+def dashboard_mongolog(state):
+    logs = []
+    mongo = MongoDB()
+    if state == 'all':
+        logs = mongo.get_logs_all()
+    elif state == 'errors':
+        logs = mongo.get_logs_errors()
+
+    return render_template('dashboard/mongologs.html', mongo_log=list(logs))
