@@ -8,6 +8,7 @@ from core.models import NoSmokingStages, Blog, Chrods, Birthdays
 from utils.utils import get_markdown
 from utils.binance_wrap import Binance
 from utils.tinkoff_wrap import Tinkoff
+from utils.git import get_gitlog
 
 
 UNITY_GAMES = ('simple_cube', 'delimiter', 'kot_guide')
@@ -242,3 +243,9 @@ def birthdays_update(birthday_id):
     context = dict(list(request.form.items()))
     Birthdays().update_birthday(birthday_id, context)
     return redirect('/birthdays/month/')
+
+
+@app.route('/dashboard/gitlog/')
+@login_required
+def dashboard_gitlog():
+    return render_template('dashboard/gitlog.html', git_log=get_gitlog())

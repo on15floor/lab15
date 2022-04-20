@@ -1,0 +1,22 @@
+.one-dark-text-green {
+    color: #96be78;
+}
+.one-dark-text-purple {
+    color: #a969cd;
+}
+.one-dark-text-red {
+    color: #c04042;
+    font-weight: bold;
+}
+.one-dark-text-white {
+    color: #abb2be;
+}
+.one-dark-text-blue {
+    color: #64aff0;
+}
+.one-dark-dashboard-bg {
+    background-color: #282c34;
+}
+.one-dark-dashboard-title {
+    color: #dbb777
+}
