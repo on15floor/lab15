@@ -1,4 +1,8 @@
+import json
+from datetime import datetime
+
 import pymongo
+from bson import json_util
 
 from config import DataBase
 
@@ -15,3 +19,14 @@ class MongoDB:
 
     def get_logs_errors(self):
         return self.collection.find({'status': 'error'}).sort("_id", -1).limit(self.logs_limit)
+
+    def save_log(self, token, uri, message, status='success'):
+        log = {
+            'date': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'status': status,
+            'token': token,
+            'uri': uri,
+            'message': message
+        }
+        self.collection.insert_one(json.loads(json_util.dumps(log)))
+        return {'status': status}

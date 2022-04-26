@@ -207,6 +207,7 @@ class Birthdays(BaseModel):
         else:
             scope_map = {
                 'month': f"strftime('%m',birthdate)=strftime('%m',date('now'))",
+                'day': f"strftime('%m-%d',birthdate)=strftime('%m-%d',date('now'))",
                 'w': f'male={False}',
                 'm': f'male={True}',
             }
@@ -243,3 +244,12 @@ class Birthdays(BaseModel):
         context['male'] = bool(context.get('male', None))
         context['birthdate_checked'] = bool(context.get('birthdate_checked', None))
         self.update_to_db(values=context, where=f'WHERE id={birthday_id}')
+
+    def api_get_birthdays(self):
+        res = []
+        birthdays = self.get_birthdays('day')
+        for lucky in birthdays:
+            male = '🚹' if lucky['male'] else '🚺'
+            checked = '✅' if lucky['birthdate_checked'] else '❌'
+            res.append(f'{male}{checked}{lucky["name"]} [{lucky["age"]} лет]')
+        return '\n'.join(res)

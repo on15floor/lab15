@@ -3,6 +3,7 @@ aiosignal==1.2.0
 async-timeout==4.0.2
 attrs==21.4.0
 bcrypt==3.2.0
+beautifulsoup4==4.11.1
 certifi==2021.10.8
 cffi==1.15.0
 charset-normalizer==2.0.12
@@ -20,9 +21,11 @@ multidict==6.0.2
 pycparser==2.21
 pydantic==1.9.0
 pymongo==4.1.1
+pyTelegramBotAPI==4.4.1
 python-dotenv==0.20.0
 requests==2.27.1
 six==1.16.0
+soupsieve==2.3.2.post1
 tinvest==3.0.5
 typing-extensions==4.1.1
 urllib3==1.26.9

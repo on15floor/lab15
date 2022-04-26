@@ -28,7 +28,7 @@ class Tokens:
     BINANCE_API_KEY = os.getenv('BINANCE_API_KEY')
     BINANCE_API_SECRET = os.getenv('BINANCE_API_SECRET')
     TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
-    API_QUERY_TOKEN = os.getenv('API_QUERY_TOKEN')
+    API_TOKEN = os.getenv('API_TOKEN')
     API_DELIMITER_TOKEN = os.getenv('API_DELIMITER_TOKEN')
 
 

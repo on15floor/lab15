@@ -1,16 +1,18 @@
-from flask import request, redirect, render_template, abort
+from flask import request, redirect, render_template, abort, jsonify
 from flask_login import login_user, login_required, logout_user
 from markupsafe import Markup
 
 from app import app
 from core.auth import auth_user
 from core.models import NoSmokingStages, Blog, Chrods, Birthdays
+from core.decorators import api_token_required
 from utils.utils import get_markdown
 from utils.binance_wrap import Binance
 from utils.tinkoff_wrap import Tinkoff
 from utils.git import get_gitlog
 from utils.mongodb_wrap import MongoDB
 from utils.beget_wrap import Crontab
+from utils.telegram_wrap import TBot
 
 
 UNITY_GAMES = ('simple_cube', 'delimiter', 'kot_guide')
@@ -292,3 +294,15 @@ def dashboard_crontab_stop(task_id):
 def dashboard_crontab_start(task_id):
     Crontab().task_change_state(task_id, 0)
     return redirect('/dashboard/crontab/')
+
+
+@app.route('/api/v1.0/get_birthdays')
+@api_token_required
+def api_get_birthdays():
+    birthdays_today = Birthdays().api_get_birthdays()
+    count = TBot().send_birthdays(birthdays_today)
+    status = MongoDB().save_log(
+        token=request.args.get('token'),
+        uri=request.url,
+        message=f'Lucky ones today: {count}')
+    return jsonify(status)
