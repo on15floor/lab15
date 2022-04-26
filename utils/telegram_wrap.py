@@ -18,4 +18,9 @@ class TBot:
         if birthdays:
             message = f'🎂Сегодня свои дни рождения празднуют:\n {birthdays}'
             self.send_message(message=message)
-        return birthdays.count('\n')
+        return len(birthdays.splitlines())
+
+    def send_beget_news(self, news):
+        if news:
+            self.send_message(message=f'ℹ️Beget news:\n {news}')
+        return len(news.splitlines())

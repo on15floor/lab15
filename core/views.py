@@ -4,7 +4,7 @@ from markupsafe import Markup
 
 from app import app
 from core.auth import auth_user
-from core.models import NoSmokingStages, Blog, Chrods, Birthdays
+from core.models import NoSmokingStages, Blog, Chrods, Birthdays, BegetNews
 from core.decorators import api_token_required
 from utils.utils import get_markdown
 from utils.binance_wrap import Binance
@@ -301,8 +301,16 @@ def dashboard_crontab_start(task_id):
 def api_get_birthdays():
     birthdays_today = Birthdays().api_get_birthdays()
     count = TBot().send_birthdays(birthdays_today)
-    status = MongoDB().save_log(
-        token=request.args.get('token'),
-        uri=request.url,
-        message=f'Lucky ones today: {count}')
+    status = MongoDB().save_log_from_request(
+        request, f'Lucky ones today: {count}')
+    return jsonify(status)
+
+
+@app.route('/api/v1.0/get_beget_news')
+@api_token_required
+def api_get_beget_news():
+    news = BegetNews().api_get_beget_news()
+    count = TBot().send_beget_news(news)
+    status = MongoDB().save_log_from_request(
+        request, f'Beget fresh news: {count}')
     return jsonify(status)

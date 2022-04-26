@@ -30,3 +30,9 @@ class MongoDB:
         }
         self.collection.insert_one(json.loads(json_util.dumps(log)))
         return {'status': status}
+
+    def save_log_from_request(self, request, message):
+        return self.save_log(
+            token=request.args.get('token'),
+            uri=request.url,
+            message=message)

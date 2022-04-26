@@ -2,6 +2,9 @@ import math
 from datetime import datetime
 from typing import List
 
+import requests
+from bs4 import BeautifulSoup
+
 from core import hardcode
 from config import DataBase
 from utils.sqlite_wrap import SQLite3Instance
@@ -252,4 +255,44 @@ class Birthdays(BaseModel):
             male = '🚹' if lucky['male'] else '🚺'
             checked = '✅' if lucky['birthdate_checked'] else '❌'
             res.append(f'{male}{checked}{lucky["name"]} [{lucky["age"]} лет]')
+        return '\n'.join(res)
+
+
+class BegetNews(BaseModel):
+    def __init__(self):
+        super().__init__()
+        self.table_name = 'api_beget'
+        self.table_columns = ['id', 'news', 'date']
+        self.order_by = 'ORDER BY date DESC'
+
+    @staticmethod
+    def parse_beget_news():
+        url = f'https://beget.com/ru/news/{datetime.now().year}/'
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        beget_news = soup.find_all(
+            'ul', {'class': 'nav nav-category-tree flex-nowrap my-0'})
+        for news in beget_news[0].contents:
+            yield news.text.strip()
+
+    def clear_old_news(self, news_db):
+        for news in news_db:
+            if news['date'][:4] != str(datetime.now().year):
+                self.delete_from_db(where=f'WHERE id={news["id"]}')
+
+    def news_exist_in_db(self, news):
+        return bool(self.select_from_db(where=f'WHERE news = "{news}"'))
+
+    def api_get_beget_news(self):
+        res = []
+
+        news_db = self.select_from_db()
+        self.clear_old_news(news_db)
+
+        news_web = [news for news in self.parse_beget_news()]
+        for news in news_web:
+            if not self.news_exist_in_db(news):
+                self.insert_to_db(values={'news': news, 'date': datetime.now()})
+                res.append(news)
+
         return '\n'.join(res)
