@@ -105,6 +105,7 @@ def utils_no_smoking():
 
 
 @app.route('/blog')
+@login_required
 def blog():
     page = request.args.get('page')
     page = int(page) if page and page.isdigit() else 1
@@ -112,6 +113,7 @@ def blog():
 
 
 @app.route('/blog/<int:post_id>')
+@login_required
 def blog_post(post_id):
     post = Blog().get_post(post_id)
     return render_template('blog/post.html', post=post)
