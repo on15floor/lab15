@@ -25,6 +25,15 @@ class BaseModel:
             columns=columns_needed,
             where=condition)
 
+    def select_from_db_limit(self, limit, offset):
+        return self.db.select_limit(
+            table=self.table_name,
+            columns=self.table_columns,
+            where=self.order_by,
+            limit=limit,
+            offset=offset
+        )
+
     def select_from_db_one(self, columns=None, where=None):
         return self.select_from_db(columns, where)[0]
 
@@ -88,6 +97,7 @@ class Blog(BaseModel):
         super().__init__()
         self.table_name = 'main_blog'
         self.table_columns = ['id', 'icon', 'title', 'intro', 'text', 'date']
+        self.order_by = 'ORDER BY date DESC'
 
         self.current_page = page
         self.posts_per_page = 10
@@ -112,12 +122,10 @@ class Blog(BaseModel):
         return self._fix_date_fmt(post)
 
     def get_posts(self):
-        posts = self.db.select_limit(
-            table=self.table_name,
-            columns=self.table_columns,
-            where='order by date desc',
+        posts = self.select_from_db_limit(
             limit=self.posts_per_page,
-            offset=self.posts_per_page * (self.current_page - 1))
+            offset=self.posts_per_page * (self.current_page - 1)
+        )
         return self._fix_date_fmt(posts)
 
     def commit_post(self, context: dict):
@@ -352,3 +360,30 @@ class IosSales(BaseModel):
 
         self.clear_old_sales(sales_db)
         return result
+
+
+class Delimiter(BaseModel):
+    def __init__(self):
+        super().__init__()
+        self.db = SQLite3Instance(DataBase.SQL_DELIMITER)
+        self.table_name = 'best_scores'
+        self.table_columns = ['user_id', 'user_name', 'best_score']
+        self.order_by = 'ORDER BY best_score DESC'
+        self.best_score_limit = 13
+
+    def _get_best_scores(self):
+        scores = self.select_from_db_limit(
+            limit=self.best_score_limit,
+            offset=0
+        )
+        for i in range(0, len(scores)):
+            yield i+1, scores[i]
+
+    def api_get_best_scores(self):
+        return {k: v for k, v in self._get_best_scores()}
+
+    def api_save_best_score(self, in_data):
+        user_id = in_data['user_id']
+        self.db.delete('best_scores', where=f'WHERE user_id="{user_id}"')
+        self.db.insert('best_scores', in_data)
+        return user_id

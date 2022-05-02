@@ -1,3 +1,5 @@
+import json
+
 from flask import request, redirect, render_template, abort, jsonify
 from flask_login import login_user, login_required, logout_user
 from markupsafe import Markup
@@ -5,7 +7,7 @@ from markupsafe import Markup
 from app import app
 from core.auth import auth_user
 from core.models import (
-    NoSmokingStages, Blog, Chrods, Birthdays, BegetNews, IosSales)
+    NoSmokingStages, Blog, Chrods, Birthdays, BegetNews, IosSales, Delimiter)
 from core.decorators import api_token_required
 from utils.utils import get_markdown
 from utils.binance_wrap import Binance
@@ -326,4 +328,16 @@ def api_get_ios_sale():
     count = TBot().send_ios_sale(sales)
     status = MongoDB().save_log_from_request(
         request, f'Apptime fresh sales: {count}')
+    return jsonify(status)
+
+
+@app.route('/api/v1.0/delimiter', methods=['POST', 'GET'])
+@api_token_required
+def api_delimiter():
+    if request.method == 'GET':
+        return jsonify(Delimiter().api_get_best_scores())
+
+    user_id = Delimiter().api_save_best_score(request.json)
+    status = MongoDB().save_log_from_request(
+        request, f'New Delimiter record for {user_id}')
     return jsonify(status)
