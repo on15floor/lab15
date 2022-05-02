@@ -37,6 +37,12 @@ class BaseModel:
     def update_to_db(self, values: dict, where: str):
         self.db.update(table=self.table_name, column_values=values, where=where)
 
+    def get_tabel_rows_number(self):
+        sql_count = 'count(1)'
+        sql = f'SELECT {sql_count} FROM {self.table_name}'
+        result = self.db.pure_select(sql)[0]
+        return result[sql_count]
+
 
 class NoSmokingStages(BaseModel):
     def __init__(self):
@@ -89,10 +95,7 @@ class Blog(BaseModel):
         self.pages_count = self._get_pages_count()
 
     def _get_pages_count(self):
-        sql = f'SELECT count(1) FROM {self.table_name}'
-        posts_count = self.db.pure_select(sql)[0]
-
-        return math.ceil(posts_count['count(1)'] / self.posts_per_page)
+        return math.ceil(self.get_tabel_rows_number() / self.posts_per_page)
 
     @staticmethod
     def _fix_date_fmt(posts: List[dict]):
@@ -296,3 +299,56 @@ class BegetNews(BaseModel):
                 res.append(news)
 
         return '\n'.join(res)
+
+
+class IosSales(BaseModel):
+    def __init__(self):
+        super().__init__()
+        self.table_name = 'api_apptime'
+        self.table_columns = ['id', 'game_name', 'price_old', 'price_new',
+                              'sale_percent', 'cover', 'app_link', 'date']
+        self.order_by = 'ORDER BY date DESC'
+        self.sales_limit = 100
+
+    @staticmethod
+    def parse_sales():
+        url = 'https://app-time.ru/skidki-rasprodazhi-izmeneniya-novinki-appstore'
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        sales = soup.find_all("div", {"class": "item-sales"})
+        for game in sales:
+            game_content_0 = game.contents[0]
+            game_content_1 = game.contents[1]
+            yield {
+                'game_name': game_content_1.contents[0].text,
+                'price_old': game_content_1.contents[3].text,
+                'price_new': game_content_1.contents[2].text,
+                'sale_percent': game_content_0.contents[0].text,
+                'cover': game_content_0.contents[1].attrs['src'],
+                'app_link': game.contents[2].attrs['href'].split('?at')[0],
+            }
+
+    def clear_old_sales(self, sales_db):
+        sales_db_count = self.get_tabel_rows_number()
+        if sales_db_count > self.sales_limit:
+            delta = sales_db_count - self.sales_limit
+            for i in range(1, delta + 1):
+                self.delete_from_db(where=f'WHERE id={sales_db[-i]["id"]}')
+                print(f'del {sales_db[-i]["game_name"]}')
+
+    def sale_exist_in_db(self, name):
+        return bool(self.select_from_db(where=f'WHERE game_name = "{name}"'))
+
+    def api_get_ios_sale(self):
+        result = []
+        sales_db = self.select_from_db()
+        sales_web = [sale for sale in self.parse_sales()]
+
+        for sale in sales_web:
+            if not self.sale_exist_in_db(sale['game_name']):
+                sale['date'] = datetime.now()
+                self.insert_to_db(values=sale)
+                result.append(sale)
+
+        self.clear_old_sales(sales_db)
+        return result

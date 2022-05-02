@@ -4,7 +4,8 @@ from markupsafe import Markup
 
 from app import app
 from core.auth import auth_user
-from core.models import NoSmokingStages, Blog, Chrods, Birthdays, BegetNews
+from core.models import (
+    NoSmokingStages, Blog, Chrods, Birthdays, BegetNews, IosSales)
 from core.decorators import api_token_required
 from utils.utils import get_markdown
 from utils.binance_wrap import Binance
@@ -313,4 +314,14 @@ def api_get_beget_news():
     count = TBot().send_beget_news(news)
     status = MongoDB().save_log_from_request(
         request, f'Beget fresh news: {count}')
+    return jsonify(status)
+
+
+@app.route('/api/v1.0/get_ios_sale')
+@api_token_required
+def api_get_ios_sale():
+    sales = IosSales().api_get_ios_sale()
+    count = TBot().send_ios_sale(sales)
+    status = MongoDB().save_log_from_request(
+        request, f'Apptime fresh sales: {count}')
     return jsonify(status)
