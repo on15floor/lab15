@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-PROJECT_PATH = os.path.dirname(os.path.abspath(__name__))
+PROJECT_PATH = os.getenv('FLASK_PATH')
 STATIC_PATH = os.path.join(PROJECT_PATH, 'static')
 
 
