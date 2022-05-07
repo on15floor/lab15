@@ -51,3 +51,7 @@ class TBot:
                 self._send_caption(chat_id=chat_id, message=message,
                                    photo_link=cover, parse_mode='HTML')
         return len(sales)
+
+    def send_error(self, error):
+        chat_id = -1001254598595
+        self._send_message(chat_id=chat_id, message=error)

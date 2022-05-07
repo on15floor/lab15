@@ -42,7 +42,7 @@ def page_not_fount(error):
 @app.errorhandler(500)
 def internal_error(error):
     """TODO: логирование mongo"""
-    print(error)
+    TBot().send_error(error)
     return render_template('500.html'), 500
 
 
