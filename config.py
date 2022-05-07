@@ -35,5 +35,6 @@ class Vars:
     TINKOFF_TAX_PLUS = os.getenv('TINKOFF_TAX_PLUS')
     TINKOFF_ACCOUNTS = {'2001148671': 'BASE', '2004836843': 'IIS'}
     TIME_ZONE = 'Europe/Moscow'
-    BEGET_LOGIN = os.getenv('BEGET_LOGIN')
-    BEGET_PASSWORD = os.getenv('BEGET_PASSWORD')
+    HOST_LGN = os.getenv('HOST_LOGIN')
+    HOST_PWD = os.getenv('HOST_PWD')
+    HOST_SRV = os.getenv('HOST_SRV')

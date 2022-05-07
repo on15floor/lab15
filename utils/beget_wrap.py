@@ -7,8 +7,8 @@ from config import Vars
 
 class Crontab:
     def __init__(self):
-        self.login = Vars.BEGET_LOGIN
-        self.password = Vars.BEGET_PASSWORD
+        self.login = Vars.HOST_LGN
+        self.password = Vars.HOST_PWD
         self.api_url = 'https://api.beget.com/api/cron/'
 
     def get_url(self, command) -> str:
