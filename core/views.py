@@ -1,24 +1,21 @@
-from tempfile import TemporaryDirectory
-
-from flask import request, redirect, render_template, abort, jsonify, send_file
-from flask_login import login_user, login_required, logout_user
 from markupsafe import Markup
+from werkzeug.wrappers import Response
+from flask_login import login_user, login_required, logout_user
+from flask import request, redirect, render_template, abort, jsonify
 
 from app import app
 from core.auth import auth_user
+from utils.git import get_gitlog
+from utils.telegram_wrap import TBot
+from utils.utils import get_markdown
+from utils.beget_wrap import Crontab
+from utils.binance_wrap import Binance
+from utils.tinkoff_wrap import Tinkoff
+from utils.mongodb_wrap import MongoDB
+from utils.apple_music import playlist_generator
 from core.models import (
     NoSmokingStages, Blog, Chrods, Birthdays, BegetNews, IosSales, Delimiter)
 from core.decorators import api_token_required
-from utils.utils import get_markdown
-from utils.binance_wrap import Binance
-from utils.tinkoff_wrap import Tinkoff
-from utils.git import get_gitlog
-from utils.mongodb_wrap import MongoDB
-from utils.beget_wrap import Crontab
-from utils.telegram_wrap import TBot
-from utils.apple_music import playlist_generator
-from werkzeug.wrappers import Response
-
 
 UNITY_GAMES = ('simple_cube', 'delimiter', 'kot_guide')
 HINTS = ('bash', 'git', 'markdown', 'python', 'sql', 'vim')
