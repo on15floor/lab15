@@ -1,59 +1,61 @@
 import os
-from datetime import timedelta
 import csv
+from io import StringIO
+from datetime import timedelta
+from argparse import ArgumentParser
 
-from bs4 import BeautifulSoup
 import requests
+from bs4 import BeautifulSoup
 
 
-def get_song_name(line):
+def _get_song_name(line):
     songtag = line.find(class_="songs-list__col--song")
     songname = songtag.find(class_="songs-list-row__song-name")
     return songname.contents[0]
 
 
-def get_artist(line):
+def _get_artist(line):
     arttag = line.find(class_="songs-list__col--artist")
     artistname = arttag.find(class_="songs-list-row__link")
     return artistname.contents[0]
 
 
-def get_album(line):
+def _get_album(line):
     albtag = line.find(class_="songs-list__col--album")
     albname = albtag.find(class_="songs-list-row__link")
     return albname.contents[0]
 
 
-def get_duration(line):
+def _get_duration(line):
     timetag = line.find(class_="songs-list-row__length")
     mins, secs = (int(i) for i in timetag.contents[0].split(':'))
     return str(timedelta(minutes=mins, seconds=secs))
 
 
-def get_links(soup):
+def _get_links(soup):
     applelinks = soup.find_all('meta', attrs={"property": "music:song"})
     for link in applelinks:
         yield link.get("content")
 
 
-def get_playlist(playlist):
+def _get_playlist(playlist):
     response = requests.get(playlist)
     soup = BeautifulSoup(response.text, 'html.parser')
-    links = get_links(soup)
+    links = _get_links(soup)
     table = soup.find(class_='songs-list typography-callout')
 
     for song in table.find_all(class_='songs-list-row'):
         yield {
-            "title": get_song_name(song),
-            "artist": get_artist(song),
-            "album": get_album(song),
-            "duration": get_duration(song),
+            "title": _get_song_name(song),
+            "artist": _get_artist(song),
+            "album": _get_album(song),
+            "duration": _get_duration(song),
             'link': next(links)
         }
 
 
-def main(playlist_link, folder=None):
-    songs_data = [s for s in get_playlist(playlist_link)]
+def playlist_save_or_print(playlist_link, folder=None):
+    songs_data = [s for s in _get_playlist(playlist_link)]
     if not folder:
         print(songs_data)
         return
@@ -68,6 +70,35 @@ def main(playlist_link, folder=None):
                 writer.writerow(song.values())
 
 
+def playlist_generator(playlist_link):
+    songs_data = [s for s in _get_playlist(playlist_link)]
+    if songs_data:
+        data = StringIO()
+        csv_buffer = csv.writer(data)
+
+        field_names = songs_data[0].keys()
+        csv_buffer.writerow(field_names)
+        yield data.getvalue()
+        data.seek(0)
+        data.truncate(0)
+
+        for song in songs_data:
+            csv_buffer.writerow(song.values())
+            yield data.getvalue()
+            data.seek(0)
+            data.truncate(0)
+
+
+def parse_args():
+    parser = ArgumentParser()
+
+    parser.add_argument('--playlist', required=True, help='playlist link')
+    parser.add_argument('--dst_path', required=False)
+    return parser.parse_args()
+
+
 if __name__ == '__main__':
-    playlist = 'https://music.apple.com/ru/playlist/armada-chill/pl.8dfe81575d33494db90c12e4c3a180a9?l=uk'
-    main(playlist, os.path.join('/Users/a.e.anisimov/Downloads/'))
+    args = parse_args()
+    playlist_save_or_print(
+        playlist_link=args.playlist,
+        folder=args.dst_path)

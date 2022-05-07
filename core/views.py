@@ -1,6 +1,6 @@
-import json
+from tempfile import TemporaryDirectory
 
-from flask import request, redirect, render_template, abort, jsonify
+from flask import request, redirect, render_template, abort, jsonify, send_file
 from flask_login import login_user, login_required, logout_user
 from markupsafe import Markup
 
@@ -16,6 +16,8 @@ from utils.git import get_gitlog
 from utils.mongodb_wrap import MongoDB
 from utils.beget_wrap import Crontab
 from utils.telegram_wrap import TBot
+from utils.apple_music import playlist_generator
+from werkzeug.wrappers import Response
 
 
 UNITY_GAMES = ('simple_cube', 'delimiter', 'kot_guide')
@@ -104,6 +106,18 @@ def utils_no_smoking():
 
     return render_template('utils/no_smoking.html', data=data,
                            no_smoking_db=obj.get_stages())
+
+
+@app.route('/utils/apple_music', methods=['GET', 'POST'])
+def utils_apple_music():
+    if request.method == 'GET':
+        return render_template('utils/apple_music.html')
+
+    playlist_link = request.form.get('playlist')
+    response = Response(playlist_generator(playlist_link), mimetype='text/csv')
+    response.headers.set(
+        "Content-Disposition", "attachment", filename="playlist.csv")
+    return response
 
 
 @app.route('/blog')
