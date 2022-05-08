@@ -42,13 +42,7 @@ def page_not_fount(error):
 @app.errorhandler(500)
 def internal_error(error):
     """TODO: логирование mongo"""
-    response = error.get_response()
-    # replace the body with JSON
-    message = {
-        "code": error.code,
-        "name": error.name,
-        "description": error.description,
-    }
+    message = f'code: {error.code}\nname: {error.name}\ndescription: {error.description}'
     TBot().send_error(message)
     return render_template('500.html'), 500
 
