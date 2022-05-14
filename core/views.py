@@ -31,6 +31,7 @@ def index():
 
 @app.route('/ping')
 def ping():
+    ttt = 1 / 0
     return "Requester IP: " + request.remote_addr
 
 

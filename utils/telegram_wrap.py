@@ -1,6 +1,7 @@
 import telebot
 
 from config import Tokens
+from utils.ghostbin_wrap import Gostbin
 
 
 BIRTHDAYS_FORMAT = """🎂Сегодня свои дни рождения празднуют:\n{birthdays}"""
@@ -8,7 +9,7 @@ BEGET_NEWS_FROMAT = """ℹ️Beget news:\n{news}"""
 IOS_SALE_FORMAT = """{game_name}
 {sale_percent} ({price_old} ₽ → <b>{price_new} ₽</b>)
 🔗 <a href="{app_link}">Скачать в App Store</a>"""
-ERROR_FORMAT = """😱Ошибка <b>{error_code}</b>\n{traceback}"""
+ERROR_FORMAT = """😱Ошибка <b>{error_code}</b> [<a href="{traceback_link}">Traceback</a>]"""
 
 
 class TBot:
@@ -56,8 +57,10 @@ class TBot:
 
     def send_error(self, error: dict):
         chat_id = -1001254598595
+        traceback_link = Gostbin().post_traceback(error.get('traceback', None))
+
         message = ERROR_FORMAT.format(
             error_code=error.get('error_code', None),
-            traceback=error.get('traceback', None)
+            traceback_link=traceback_link
         )
         self._send_message(chat_id=chat_id, message=message, parse_mode='HTML')
