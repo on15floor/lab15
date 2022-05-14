@@ -8,14 +8,16 @@ BEGET_NEWS_FROMAT = """ℹ️Beget news:\n{news}"""
 IOS_SALE_FORMAT = """{game_name}
 {sale_percent} ({price_old} ₽ → <b>{price_new} ₽</b>)
 🔗 <a href="{app_link}">Скачать в App Store</a>"""
+ERROR_FORMAT = """😱Ошибка <b>{error_code}</b>\n{traceback}"""
 
 
 class TBot:
     def __init__(self):
         self._bot = telebot.TeleBot(Tokens.TELEGRAM_BOT_TOKEN)
 
-    def _send_message(self, chat_id, message):
-        self._bot.send_message(chat_id=chat_id, text=message)
+    def _send_message(self, chat_id, message, parse_mode=None):
+        self._bot.send_message(
+            chat_id=chat_id, text=message, parse_mode=parse_mode)
 
     def _send_caption(self, chat_id, photo_link, message, parse_mode=None):
         self._bot.send_photo(chat_id=chat_id, photo=photo_link,
@@ -52,6 +54,10 @@ class TBot:
                                    photo_link=cover, parse_mode='HTML')
         return len(sales)
 
-    def send_error(self, error):
+    def send_error(self, error: dict):
         chat_id = -1001254598595
-        self._send_message(chat_id=chat_id, message=error)
+        message = ERROR_FORMAT.format(
+            error_code=error.get('error_code', None),
+            traceback=error.get('traceback', None)
+        )
+        self._send_message(chat_id=chat_id, message=message, parse_mode='HTML')

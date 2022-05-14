@@ -1,3 +1,5 @@
+import traceback
+
 from markupsafe import Markup
 from werkzeug.wrappers import Response
 from flask_login import login_user, login_required, logout_user
@@ -33,17 +35,14 @@ def ping():
 
 
 @app.errorhandler(404)
-def page_not_fount(error):
-    """TODO: логирование mongo"""
-    print(error)
+def page_not_fount():
     return render_template('404.html'), 404
 
 
 @app.errorhandler(500)
 def internal_error(error):
-    """TODO: логирование mongo"""
-    message = f'code: {error.code}\nname: {error.name}\ndescription: {error.description}'
-    TBot().send_error(message)
+    e = {'error_code': error.code, 'traceback': traceback.format_exc()}
+    TBot().send_error(e)
     return render_template('500.html'), 500
 
 
