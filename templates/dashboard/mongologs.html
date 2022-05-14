@@ -23,7 +23,8 @@
             {% else %}
                 <span class="one-dark-text-green">[{{ log.status }}]</span>
             {% endif %}
-            <span class="one-dark-text-blue">[{{ log.uri }}] - </span> <span>{{ log.message }}</span> <br />
+            {% set url = log.uri.split('?') %}
+            <span class="one-dark-text-blue">[{{ url[0] }}] - </span> <span>{{ log.message }}</span> <br />
         {% endfor %}
         </div>
     </div>
