@@ -31,12 +31,11 @@ def index():
 
 @app.route('/ping')
 def ping():
-    ttt = 1 / 0
     return "Requester IP: " + request.remote_addr
 
 
 @app.errorhandler(404)
-def page_not_fount():
+def page_not_fount(error):
     return render_template('404.html'), 404
 
 
