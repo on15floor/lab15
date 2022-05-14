@@ -37,8 +37,7 @@ def main():
     exec_cmd('source venv/bin/activate', host_dir)
     exec_cmd(('git pull',
               'pip install --upgrade pip',
-              'pip install -q -r requirements.txt',
-              '-m pip install "pymongo[srv]"'),
+              'pip install -q -r requirements.txt'),
              project_dir)
 
     print_info('Restarting application')
