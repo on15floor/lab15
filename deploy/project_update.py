@@ -38,7 +38,7 @@ def main():
     exec_cmd(('git pull',
               'pip install --upgrade pip',
               'pip install -q -r requirements.txt',
-              'pip install "pymongo[srv]"'),
+              '-m pip install "pymongo[srv]"'),
              project_dir)
 
     print_info('Restarting application')
