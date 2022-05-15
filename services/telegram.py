@@ -1,7 +1,7 @@
 import telebot
 
 from config import Tokens
-from utils.ghostbin_wrap import Gostbin
+from services.ghostbin import Gostbin
 
 
 BIRTHDAYS_FORMAT = """🎂Сегодня свои дни рождения празднуют:\n{birthdays}"""

@@ -7,17 +7,18 @@ from flask import request, redirect, render_template, abort, jsonify
 
 from app import app
 from core.auth import auth_user
-from utils.git import get_gitlog
-from utils.telegram_wrap import TBot
-from utils.utils import get_markdown
-from utils.beget_wrap import Crontab
-from utils.binance_wrap import Binance
-from utils.tinkoff_wrap import Tinkoff
-from utils.mongodb_wrap import MongoDB
-from utils.apple_music import playlist_generator
 from core.models import (
     NoSmokingStages, Blog, Chrods, Birthdays, BegetNews, IosSales, Delimiter)
 from core.decorators import api_token_required
+from services.telegram import TBot
+from services.beget import Crontab
+from services.binance import Binance
+from services.tinkoff import Tinkoff
+from utils.git import get_gitlog
+from utils.utils import get_markdown
+from utils.mongodb_wrap import MongoDB
+from utils.apple_music import playlist_generator
+
 
 UNITY_GAMES = ('simple_cube', 'delimiter', 'kot_guide')
 HINTS = ('bash', 'git', 'markdown', 'python', 'sql', 'vim')
