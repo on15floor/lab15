@@ -1,6 +1,7 @@
+# noinspection PyPackageRequirements
 import telebot
 
-from config import Tokens
+from config import Tokens, Config
 from services.ghostbin import Gostbin
 
 
@@ -63,4 +64,6 @@ class TBot:
             error_code=error.get('error_code', None),
             traceback_link=traceback_link
         )
-        self._send_message(chat_id=chat_id, message=message, parse_mode='HTML')
+        if not Config.FLASK_DEBUG:
+            self._send_message(
+                chat_id=chat_id, message=message, parse_mode='HTML')

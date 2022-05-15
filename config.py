@@ -13,6 +13,7 @@ class Config:
     FLASK_ADMIN = os.getenv('FLASK_ADMIN')
     FLASK_ADMIN_PWD = os.getenv('FLASK_ADMIN_PWD')
     FLASK_SECRET_KEY = os.getenv('FLASK_SECRET_KEY')
+    FLASK_DEBUG = os.getenv('FLASK_DEBUG') == 'True'
 
 
 class DataBase:
