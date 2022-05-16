@@ -6,14 +6,14 @@
 <div class="container pt-5 my-3 p-3 rounded shadow-sm container-theme">
     <h4 class="border-bottom pb-2 mb-0">Последние посты</h4>
     {% for post in blog.get_posts() %}
-    <div class="media pt-3">
+    <div class="media pt-3 border-bottom">
         <figure>
             <img src="{{ post.icon }}" width="64" height="64" alt="icon">
             <div class="small text-center">
                 {{ post.date }}
             </div>
         </figure>
-        <p class="media-body pb-3 pl-3 mb-0 border-bottom">
+        <p class="media-body pb-3 pl-3 mb-0">
             <strong class="d-block text-gray-dark">{{ post.title }}</strong>
             {{ post.intro }} <a href="/blog/{{ post.id }}">Читать дальше...</a>
         </p>
