@@ -22,8 +22,10 @@ def hash_pw(password):
 
 
 def get_ip(request):
-    if request.environ.get('HTTP_X_FORWARDED_FOR') is None:
-        ip = request.environ['REMOTE_ADDR']
+    if 'X-Forwarded-For' in request.headers:
+        proxy_data = request.headers['X-Forwarded-For']
+        ip_list = proxy_data.split(',')
+        user_ip = ip_list[0]
     else:
-        ip = request.environ['HTTP_X_FORWARDED_FOR']
-    return ip
+        user_ip = request.remote_addr
+    return user_ip
