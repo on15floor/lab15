@@ -19,3 +19,11 @@ def check_pw(password, hash_password):
 def hash_pw(password):
     password_hash = bcrypt.hashpw(bytes(password, 'utf-8'), bcrypt.gensalt(10))
     return password_hash.decode('utf-8')
+
+
+def get_ip(request):
+    if request.environ.get('HTTP_X_FORWARDED_FOR') is None:
+        ip = request.environ['REMOTE_ADDR']
+    else:
+        ip = request.environ['HTTP_X_FORWARDED_FOR']
+    return ip
