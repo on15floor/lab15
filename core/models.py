@@ -129,16 +129,16 @@ class Blog(BaseModel):
         return self._fix_date_fmt(posts)
 
     def commit_post(self, context: dict):
-        context.pop('files')    # wtf?
-        context.update({'date': datetime.now()})
-        self.insert_to_db(values=context)
+        data = {k: v for k, v in context.items() if k in self.table_columns}
+        data.update({'date': datetime.now()})
+        self.insert_to_db(values=data)
 
     def delete_post(self, post_id):
         self.delete_from_db(where=f'WHERE id={post_id}')
 
     def update_post(self, post_id, context):
-        context.pop('files')    # wtf?
-        self.update_to_db(values=context, where=f'WHERE id={post_id}')
+        data = {k: v for k, v in context.items() if k in self.table_columns}
+        self.update_to_db(values=data, where=f'WHERE id={post_id}')
 
     def has_next_page(self):
         return self.current_page < self.pages_count
