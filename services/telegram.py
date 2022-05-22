@@ -76,7 +76,7 @@ class TBot:
             traceback_link=traceback_link,
             ip=ip,
             country=ip_data.get_country(),
-            city=ip_data.get_country()
+            city=ip_data.get_city()
         )
         if not Config.FLASK_DEBUG:
             self._send_message(
