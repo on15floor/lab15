@@ -15,7 +15,7 @@ from services.beget import Crontab
 from services.binance import Binance
 from services.tinkoff import Tinkoff
 from utils.git import get_gitlog
-from utils.utils import get_markdown
+from utils.utils import get_markdown, get_ip
 from utils.mongodb_wrap import MongoDB
 from utils.apple_music import playlist_generator
 
@@ -32,8 +32,8 @@ def index():
 
 @app.route('/ping')
 def ping():
-    ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
-    return "Requester IP: " + ip
+    t = 1 / 0
+    return "Requester IP: " + get_ip(request)
 
 
 # noinspection PyUnusedLocal
@@ -45,7 +45,7 @@ def page_not_fount(error):
 @app.errorhandler(500)
 def internal_error(error):
     e = {'error_code': error.code, 'traceback': traceback.format_exc()}
-    TBot().send_error(e)
+    TBot().send_error(e, get_ip(request))
     return render_template('500.html'), 500
 
 

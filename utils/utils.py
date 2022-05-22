@@ -19,3 +19,7 @@ def check_pw(password, hash_password):
 def hash_pw(password):
     password_hash = bcrypt.hashpw(bytes(password, 'utf-8'), bcrypt.gensalt(10))
     return password_hash.decode('utf-8')
+
+
+def get_ip(request):
+    return request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
