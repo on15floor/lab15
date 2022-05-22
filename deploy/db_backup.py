@@ -20,25 +20,27 @@ def get_last_backup():
     return max(backup_paths, key=os.path.getctime)
 
 
-def main():
+def main(force):
     print_header('Start dumping')
     ftp = ftplib.FTP(Vars.HOST_SRV)
     ftp.login(Vars.HOST_LGN, Vars.HOST_PWD)
 
     ftp.cwd('/lab15.ru/lab15/db')
 
-    ftp.sendcmd("TYPE i")
-    if ftp.size("db.sqlite3") == os.path.getsize(get_last_backup()):
-        print_header(f'The latest version of the backup has already been saved')
-    else:
-        backup_name = f'db_{datetime.now().strftime("%Y_%m_%d")}.sqlite3'
-        target = os.path.join(backups_dir, backup_name)
+    if not force:
+        ftp.sendcmd("TYPE i")
+        if ftp.size("db.sqlite3") == os.path.getsize(get_last_backup()):
+            print_header(f'The latest version of the backup has already been saved')
+            return
 
-        ftp.sendcmd("TYPE A")
-        ftp.retrbinary('RETR db.sqlite3', open(target, 'wb').write)
-        target_size = os.path.getsize(get_last_backup())
-        print_header(f'The dump is saved: {target} [{target_size} bytes]')
+    backup_name = f'db_{datetime.now().strftime("%Y_%m_%d")}.sqlite3'
+    target = os.path.join(backups_dir, backup_name)
+
+    ftp.sendcmd("TYPE A")
+    ftp.retrbinary('RETR db.sqlite3', open(target, 'wb').write)
+    target_size = os.path.getsize(get_last_backup())
+    print_header(f'The dump is saved: {target} [{target_size} bytes]')
 
 
 if __name__ == '__main__':
-    main()
+    main(force=False)
