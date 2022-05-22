@@ -19,13 +19,3 @@ def check_pw(password, hash_password):
 def hash_pw(password):
     password_hash = bcrypt.hashpw(bytes(password, 'utf-8'), bcrypt.gensalt(10))
     return password_hash.decode('utf-8')
-
-
-def get_ip(request):
-    if 'X-Forwarded-For' in request.headers:
-        proxy_data = request.headers['X-Forwarded-For']
-        ip_list = proxy_data.split(',')
-        user_ip = ip_list[0]
-    else:
-        user_ip = request.remote_addr
-    return user_ip

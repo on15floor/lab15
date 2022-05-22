@@ -15,7 +15,7 @@ from services.beget import Crontab
 from services.binance import Binance
 from services.tinkoff import Tinkoff
 from utils.git import get_gitlog
-from utils.utils import get_markdown, get_ip
+from utils.utils import get_markdown
 from utils.mongodb_wrap import MongoDB
 from utils.apple_music import playlist_generator
 
@@ -32,7 +32,8 @@ def index():
 
 @app.route('/ping')
 def ping():
-    return "Requester IP: " + get_ip(request)
+    ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
+    return "Requester IP: " + ip
 
 
 # noinspection PyUnusedLocal
