@@ -1,66 +1,42 @@
-// Объект с курсами валют
-const rates = {};
-// Элементы для отображения курсов валют
-const elementUSD = document.querySelector('[data-value="USD"]');
-const elementEUR = document.querySelector('[data-value="EUR"]');
-const elementUAH = document.querySelector('[data-value="UAH"]');
-const elementKZT = document.querySelector('[data-value="KZT"]');
-// Элементы формы
-const input = document.querySelector('#input');
-const result = document.querySelector('#result');
-const select = document.querySelector('#select');
+const currencies = ['USD', 'EUR', 'UAH', 'KZT'];
+const rates = getCurrencies();
 
-// Функция получения и отображения курсов валют
+const formInput = document.querySelector('#input');
+const formResult = document.querySelector('#result');
+const formSelect = document.querySelector('#select');
+const formElements = document.querySelectorAll('#badge')
 
 async function getCurrencies () {
-    // Получаем последние курсы валют
+    // get currencies
     const response = await fetch('https://www.cbr-xml-daily.ru/daily_json.js');
     const data = await response.json();
     const result = await data;
 
-    // Парсим интересующие нас курсы валют
-    rates.USD = result.Valute.USD;
-    rates.EUR = result.Valute.EUR;
-    rates.UAH = result.Valute.UAH;
-    rates.KZT = result.Valute.KZT;
+    for (let i = 0; i < currencies.length; i += 1) {
+        let cur = currencies[i];
+        rates[cur] = result['Valute'][cur];
+    }
 
-    // Заполняем шаблон текущим курсом
-    elementUSD.textContent = rates.USD.Value.toFixed(2);
-    elementEUR.textContent = rates.EUR.Value.toFixed(2);
-    elementUAH.textContent = rates.UAH.Value.toFixed(2);
-    elementKZT.textContent = rates.KZT.Value.toFixed(2);
+    // draw badges
+    for (let i = 0; i < formElements.length; i += 1) {
+        let el_cur_name = formElements[i].getAttribute('data-value');
+        let cur_value = rates[el_cur_name]['Value']
+        let cur_prev = rates[el_cur_name]['Previous']
 
-    // Подкрашиваем курс, в зависимости от того вырос он или нет за сутки
-    if (rates.USD.Value > rates.USD.Previous) {
-        elementUSD.classList.add('badge-success');
-    } else {
-        elementUSD.classList.add('badge-warning');
-    }
-    if (rates.EUR.Value > rates.EUR.Previous) {
-        elementEUR.classList.add('badge-success');
-    } else {
-        elementEUR.classList.add('badge-warning');
-    }
-    if (rates.UAH.Value > rates.UAH.Previous) {
-        elementUAH.classList.add('badge-success');
-    } else {
-        elementUAH.classList.add('badge-warning');
-    }
-    if (rates.KZT.Value > rates.KZT.Previous) {
-        elementKZT.classList.add('badge-success');
-    } else {
-        elementKZT.classList.add('badge-warning');
+        formElements[i].textContent = cur_value.toFixed(2);
+
+        if (cur_value > cur_prev) {
+            formElements[i].classList.add('badge-success');
+        } else {
+            formElements[i].classList.add('badge-warning');
+        }
     }
 }
 
-// Функция конвертации курса валют
 function convertValue() {
-    result.value = ((parseFloat(input.value) / rates[select.value].Value) *
-        rates[select.value].Nominal).toFixed(2);
+    formResult.value = ((parseFloat(formInput.value) / rates[formSelect.value]['Value']) *
+        rates[formSelect.value]['Nominal']).toFixed(2);
 }
 
-getCurrencies();
-//setInterval(getCurrencies, 10000);
-
-input.oninput = convertValue;
-select.oninput = convertValue;
+formInput.oninput = convertValue;
+formSelect.oninput = convertValue;
