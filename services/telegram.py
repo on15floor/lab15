@@ -2,7 +2,7 @@
 import telebot
 
 from config import Tokens, Config
-from services.ghostbin import Gostbin
+from services.dpaste import DPaste
 
 
 BIRTHDAYS_FORMAT = """🎂Сегодня свои дни рождения празднуют:\n{birthdays}"""
@@ -58,7 +58,7 @@ class TBot:
 
     def send_error(self, error: dict):
         chat_id = -1001254598595
-        traceback_link = Gostbin().post_traceback(error.get('traceback', None))
+        traceback_link = DPaste().post_traceback(error.get('traceback', None))
 
         message = ERROR_FORMAT.format(
             error_code=error.get('error_code', None),
