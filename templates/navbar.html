@@ -15,8 +15,8 @@
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownUnity" role="button"
                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Chords</a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownUnity">
-                    <a class="dropdown-item" href="/chords/guitar">Гитара</a>
-                    <a class="dropdown-item" href="/chords/ukulele">Укулеле</a>
+                    <a class="dropdown-item" href="/chords/guitar">Guitar</a>
+                    <a class="dropdown-item" href="/chords/ukulele">Ukulele</a>
                 </div>
             </li>
             <li class="nav-item dropdown">
@@ -33,7 +33,7 @@
                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Utils</a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownUnity">
                     <a class="dropdown-item" href="/utils/no_smoking">No smoking</a>
-                    <a class="dropdown-item" href="/utils/converter">Конвертер валют</a>
+                    <a class="dropdown-item" href="/utils/converter">Currency Converter</a>
                     <a class="dropdown-item" href="/utils/hints/git">Hints</a>
                     <a class="dropdown-item" href="/utils/apple_music">Apple Music Saver</a>
                 </div>
@@ -43,26 +43,26 @@
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMoney" role="button"
                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Money</a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMoney">
-                        <a class="dropdown-item" href="/money/stocks">Акции</a>
-                        <a class="dropdown-item" href="/money/crypto">Крипто</a>
+                        <a class="dropdown-item" href="/money/stocks">Stocks</a>
+                        <a class="dropdown-item" href="/money/crypto">Crypto</a>
                     </div>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="/birthdays/month">ДР</a></li>
+                <li class="nav-item"><a class="nav-link" href="/birthdays/month">BDay</a></li>
             {% endif %}
         </ul>
         <form class="form-inline mt-2 mt-md-0">
             <div class="text-end">
                 {% if current_user.is_authenticated %}
                     {% if 'blog' in request.path %}
-                        <a href="/blog/create" class="btn btn-outline-warning my-2 my-sm-0 btn-sm">Создать</a>
+                        <a href="/blog/create" class="btn btn-outline-warning my-2 my-sm-0 btn-sm">Create</a>
                     {% endif %}
                     {% if 'birthdays' in request.path %}
-                        <input type="search" class="form-control bg-dark border-secondary text-white" placeholder="Поиск..." name="q">
-                        <a href="/birthdays/create" class="btn btn-outline-warning my-2 my-sm-0 btn-sm">Добавить</a>
+                        <input type="search" class="form-control bg-dark border-secondary text-white" placeholder="Search..." name="q">
+                        <a href="/birthdays/create" class="btn btn-outline-warning my-2 my-sm-0 btn-sm">Add</a>
                     {% endif %}
                     {% if 'chords' in request.path %}
-                        <input type="search" class="form-control bg-dark border-secondary text-white" placeholder="Поиск..." name="q">
-                        <a href="/chords/create" class="btn btn-outline-warning my-2 my-sm-0 btn-sm">Добавить</a>
+                        <input type="search" class="form-control bg-dark border-secondary text-white" placeholder="Search..." name="q">
+                        <a href="/chords/create" class="btn btn-outline-warning my-2 my-sm-0 btn-sm">Add</a>
                     {% endif %}
                     <a href="/dashboard/gitlog/" class="btn btn-outline-info my-2 my-sm-0 btn-sm">Dashboard</a>
                     <a href="/logout" class="btn btn-outline-danger my-2 my-sm-0 btn-sm">🔴</a>
