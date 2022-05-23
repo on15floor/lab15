@@ -23,6 +23,8 @@ from utils.apple_music import playlist_generator
 UNITY_GAMES = ('simple_cube', 'delimiter', 'kot_guide')
 HINTS = ('bash', 'git', 'markdown', 'python', 'sql', 'vim')
 MUSIC_INSTRUMENT = ('ukulele', 'guitar')
+CURRENCIES = {'RUB': '🇷🇺', 'USD': '🇺🇸', 'EUR': '🇪🇺', 'UAH': '🇺🇦',
+              'KZT': '🇰🇿', 'TRY': '🇹🇷', 'AMD': '🇦🇲'}
 
 
 @app.route('/')
@@ -32,7 +34,6 @@ def index():
 
 @app.route('/ping')
 def ping():
-    t = 1 / 0
     return "Requester IP: " + get_ip(request)
 
 
@@ -93,7 +94,7 @@ def utils_hints(hint):
 
 @app.route('/utils/converter')
 def utils_converter():
-    return render_template('utils/converter.html')
+    return render_template('utils/converter.html', currencies=CURRENCIES)
 
 
 @app.route('/utils/no_smoking', methods=['GET', 'POST'])

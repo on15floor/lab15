@@ -1,34 +1,26 @@
 {% extends 'base.html' %}
 {% block title %}Конвертор{% endblock %}
+
 {% block body %}
 <div class="container pt-5 my-3 p-3 rounded shadow-sm container-theme">
     <h4 class="border-bottom pb-2 mb-0 border-gray">Конвертор</h4>
-    <h5>
-        <span class="badge badge-secondary">USD <span id="badge" class="badge" data-value="USD">--.--</span></span>
-        <span class="badge badge-secondary">EUR <span id="badge" class="badge" data-value="EUR">--.--</span></span>
-        <span class="badge badge-secondary">UAH <span id="badge" class="badge" data-value="UAH">--.--</span></span>
-        <span class="badge badge-secondary">KZT <span id="badge" class="badge" data-value="KZT">--.--</span></span>
-    </h5>
+    <div class="alert my-3 alert-theme">
 
-    <div class="input-group mb-2">
-        <div class="input-group-prepend"><div class="input-group-text">🔜</div></div>
-        <div class="col"><input id="input" type="number" class="form-control" autofocus/></div>
-        <select disabled class="form-control">
-            <option value="RUB" selected>RUB 🇷🇺</option>
-        </select>
+    {% for cur, flag in currencies.items() %}
+        <div class="input-group input-group-sm mb-3">
+            <div class="input-group-append">
+                <span class="input-group-text">
+                    <span class="badge badge-secondary">{{ cur }}
+                        <span id="badge" class="badge" data-value="{{ cur }}">00.00</span>
+                    </span>
+                </span>
+            </div>
+        <input type="number" id="currencie" class="form-control" aria-label="{{ cur }} amount" data-value="{{ cur }}">
+        <div class="input-group-prepend"><span class="input-group-text">{{ flag }}</span></div>
     </div>
+    {% endfor %}
 
-    <div class="input-group mb-2">
-        <div class="input-group-prepend"><div class="input-group-text">🔙</div></div>
-        <div class="col"><input id="result" type="number" class="form-control"/></div>
-        <select id="select" class="form-control">
-            <option value="USD">USD 🇺🇸</option>
-            <option value="EUR">EUR 🇪🇺</option>
-            <option value="UAH">UAH 🇺🇦</option>
-            <option value="KZT">KZT 🇰🇿</option>
-        </select>
     </div>
-
-    <script src="/static/js/money_converter.js"></script>
+    <script src="/static/js/money_converter.js?version=1.1"></script>
 </div>
 {% endblock %}
