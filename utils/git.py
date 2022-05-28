@@ -5,7 +5,7 @@ from config import PROJECT_PATH
 
 def get_gitlog():
     _format = '--format=format:' \
-              '<span class="one-dark-text-purple">%h</span>-' \
+              '<span class="one-dark-text-purple">%h</span> ' \
               '<span class="one-dark-text-green">(%ar)</span> %s - ' \
               '<span class="one-dark-text-blue"><b>%an</b></span>' \
               '<span class="badge bg-warning text-dark">%d</span>'
