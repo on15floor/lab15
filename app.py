@@ -7,5 +7,5 @@ app.secret_key = Config.FLASK_SECRET_KEY
 app.debug = Config.FLASK_DEBUG
 
 # noinspection PyUnresolvedReferences
-from core import auth, views, filters
+from core import auth, views, filters, globals
 auth.Init(app)

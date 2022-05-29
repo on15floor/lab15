@@ -1,26 +1,6 @@
-// https://github.com/hyperstown/puresnowjs
-
 let snowflakesCount = 50;
-
-// let baseCss = ``; // Put your custom base css here
-
-if (typeof total !== 'undefined'){
-    snowflakesCount = total;
-}
-
 let bodyHeightPx = document.body.offsetHeight;
 let pageHeightVH = (100 * bodyHeightPx / window.innerHeight);
-
-// This function allows you to turn on and off the snow
-function toggleSnow() {
-    let checkBox = document.getElementById("toggleSnow");
-    if (checkBox.checked == true) {
-        document.getElementById('snow').style.display = "block";
-    }
-    else {
-        document.getElementById('snow').style.display = "none";
-    }
-}
 
 // Creating snowflakes
 function spawnSnow(snowDensity = 200) {
@@ -37,7 +17,6 @@ function spawnSnow(snowDensity = 200) {
 // Append style for each snowflake to the head
 function addCss(rule) {
     let css = document.createElement('style');
-    css.type = 'text/css';
     css.appendChild(document.createTextNode(rule)); // Support for the rest
     document.getElementsByTagName("head")[0].appendChild(css);
 }
@@ -57,9 +36,6 @@ function randomRange(min, max) {
 function spawnSnowCSS(snowDensity = 200){
     let snowflakeName = "snowflake";
     let rule = ``;
-    if (typeof baseCss !== 'undefined'){
-        rule = baseCss;
-    }
 
     for(let i = 1; i < snowDensity; i++){
         let randomX = Math.random() * 100; // vw

@@ -34,7 +34,8 @@ class Tokens:
 
 class Vars:
     TINKOFF_TAX_PLUS = os.getenv('TINKOFF_TAX_PLUS')
-    TINKOFF_ACCOUNTS = {'2001148671': 'BASE'}
     HOST_LGN = os.getenv('HOST_LGN')
     HOST_PWD = os.getenv('HOST_PWD')
     HOST_SRV = os.getenv('HOST_SRV')
+    TINKOFF_ACCOUNTS = {'2001148671': 'BASE'}
+    SNOWY_MONTH = (1, 11)

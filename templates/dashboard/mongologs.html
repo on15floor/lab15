@@ -2,11 +2,6 @@
 {% block title %}Dashboard > MongoDBLog{% endblock %}
 {% block head %}
     <link rel="stylesheet" href="/static/css/dashboard.css">
-    <script>
-        $(function () {
-            $('[data-toggle="popover"]').popover()
-        })
-    </script>
 {% endblock %}
 
 {% block body %}
@@ -16,15 +11,21 @@
 
         <div>
         {% for log in mongo_log %}
-            <a href="#" data-container="body" data-toggle="popover" data-placement="bottom" data-content="{{ log }}">🔸️️</a>
-            <span class="one-dark-text-purple">[{{ log.date }}]</span>
-            {% if log.status == 'error' %}
-                <span class="one-dark-text-red">[_{{ log.status }}_]</span>
-            {% else %}
-                <span class="one-dark-text-green">[{{ log.status }}]</span>
-            {% endif %}
-            {% set url = log.uri.split('?') %}
-            <span class="one-dark-text-blue">[{{ url[0] }}] - </span> <span>{{ log.message }}</span> <br />
+            <details>
+                <summary>
+                    <span class="one-dark-text-purple">[{{ log.date }}]</span>
+                    {% if log.status == 'error' %}
+                        <span class="one-dark-text-red">[_{{ log.status }}_]</span>
+                    {% else %}
+                        <span class="one-dark-text-green">[{{ log.status }}]</span>
+                    {% endif %}
+                    {% set url = log.uri.split('?') %}
+                    <span class="one-dark-text-blue">[{{ url[0] }}] - </span> <span>{{ log.message }}</span> <br />
+                </summary>
+                {% for k, v in log.items() %}
+                    <span class="one-dark-text-orange">{{ k }}:</span> {{ v }} <br />
+                {% endfor %}
+            </details>
         {% endfor %}
         </div>
     </div>

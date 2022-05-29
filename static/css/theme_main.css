@@ -44,3 +44,26 @@ body {
     background: white;
     border-radius: 50%;
 }
+
+/* Social Button Stype */
+.scl-btn {
+    padding: 15px;
+    font-size: 25px;
+    width: 55px;
+    text-align: center;
+    text-decoration: none;
+    margin: 5px;
+    color: white;
+}
+
+.scl-btn:hover {
+    opacity: 0.8;
+    text-align: center;
+    text-decoration: none;
+    color: white;
+}
+
+.scl-crcl {
+    border-radius: 50%;
+    background: #202529;
+}
