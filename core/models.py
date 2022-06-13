@@ -1,6 +1,6 @@
 import math
-from datetime import datetime
 from typing import List
+from datetime import datetime, timedelta
 
 import requests
 from bs4 import BeautifulSoup
@@ -279,10 +279,16 @@ class BegetNews(BaseModel):
     @staticmethod
     def parse_beget_news():
         url = f'https://beget.com/ru/news/{datetime.now().year}/'
-        response = requests.get(url)
+        new_date = datetime.now() + timedelta(days=1)
+        cookies = {
+            'beget': 'begetok',
+            'expires': new_date.strftime('%a, %d %b %Y %H:%M:%S GMT')
+        }
+        response = requests.get(url, cookies=cookies)
+
         soup = BeautifulSoup(response.text, 'html.parser')
         beget_news = soup.find_all(
-            'ul', {'class': 'nav nav-category-tree flex-nowrap my-0'})
+            'ul', {'class': 'nav nav-category-tree flex-nowrap'})
         for news in beget_news[0].contents:
             yield news.text.strip()
 
