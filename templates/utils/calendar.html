@@ -3,7 +3,7 @@
 
 {% block body %}
     <div class="container pt-5 my-3 p-3 rounded shadow-sm container-theme small">
-        <h4>Calendar</h4>
+        <h4>Calendar {{ dt_now.year }}</h4>
         <div class="row">
 
             {% set week_addr = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'] %}
