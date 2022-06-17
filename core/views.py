@@ -1,5 +1,4 @@
 import traceback
-from datetime import datetime
 
 from markupsafe import Markup
 from werkzeug.wrappers import Response
