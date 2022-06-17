@@ -1,4 +1,5 @@
 import traceback
+from datetime import datetime
 
 from markupsafe import Markup
 from werkzeug.wrappers import Response
@@ -15,9 +16,9 @@ from services.beget import Crontab
 from services.binance import Binance
 from services.tinkoff import Tinkoff
 from utils.git import get_gitlog
-from utils.utils import get_markdown, get_ip
 from utils.mongodb_wrap import MongoDB
 from utils.apple_music import playlist_generator
+from utils.utils import get_markdown, get_ip, gen_calender, get_this_month_abbr
 
 
 UNITY_GAMES = ('simple_cube', 'delimiter', 'kot_guide')
@@ -119,6 +120,13 @@ def utils_apple_music():
     response.headers.set(
         "Content-Disposition", "attachment", filename="playlist.csv")
     return response
+
+
+@app.route('/utils/calendar', methods=['GET', 'POST'])
+def utils_calendar():
+    return render_template(
+        'utils/calendar.html', this_month=get_this_month_abbr(),
+        content=dict(gen_calender()))
 
 
 @app.route('/blog')
