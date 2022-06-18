@@ -2,45 +2,69 @@
 {% block title %}Calendar{% endblock %}
 
 {% block body %}
+    {% set week_addr = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'] %}
+
     <div class="container pt-5 my-3 p-3 rounded shadow-sm container-theme small">
         <h4>Calendar {{ dt_now.year }}</h4>
         <div class="row">
-
-            {% set week_addr = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'] %}
-            {% for month_addr,monthInfo in content.items() %}
-
+            {% for month_addr, month_data in content.items() %}
                 <div class="col-md-3">
                     <h6 class="text-center">{{ month_addr }}</h6>
-                    {% with _month=false %}
-                        {% if month_addr == this_month %}
-                            <table style='background-color:#a6e1ec'
-                                   class="table table-bordered table-sm small text-center">
-                            {% set _month = true %}
+                        {% if month_data.current_month == True %}
+                            <table class="table table-bordered table-sm small text-center calendar_this_month">
                         {% else %}
-                            <table class="table table-bordered table-sm table-secondary small text-center">
+                            <table class="table table-bordered table-sm small text-center table-secondary">
                         {% endif %}
-                        <tr>
-                            {% for addr in week_addr %}
-                                <th>{{ addr }}</th>
-                            {% endfor %}
-                        </tr>
-                        {% for weeks in monthInfo %}
+                            <tr>{% for addr in week_addr %}<th>{{ addr }}</th>{% endfor %}</tr>
+                        {% for weeks, weeks_data in month_data.weeks.items() %}
                             <tr>
-                                {% for day in weeks %}
-                                    {% if day == 0 %}
-                                        <td>&nbsp</td>
-                                    {% elif _month== true and day == dt_now.day %}
-                                        <td style="background-color:hotpink;">{{ day }}</td>
+                                {% for day, day_data in weeks_data.items() %}
+                                    {% if day_data.current_day == True %}
+                                        <td class="calendar_this_day">{{ day_data.day | safe}}</td>
+                                    {% elif day_data.weekend == True %}
+                                        <td class="calendar_weekend">{{ day_data.day | safe}}</td>
                                     {% else %}
-                                        <td>{{ day }}</td>
+                                        <td>{{ day_data.day | safe}}</td>
                                     {% endif %}
                                 {% endfor %}
                             </tr>
                         {% endfor %}
-                    {% endwith %}
                     </table>
                 </div>
             {% endfor %}
+{#            {% for month_addr,monthInfo in content.items() %}#}
+{#                <div class="col-md-3">#}
+{#                    <h6 class="text-center">{{ month_addr }}</h6>#}
+{#                    {% with _month=false %}#}
+{#                        {% if month_addr == this_month %}#}
+{#                            <table style='background-color:#a6e1ec'#}
+{#                                   class="table table-bordered table-sm small text-center">#}
+{#                            {% set _month = true %}#}
+{#                        {% else %}#}
+{#                            <table class="table table-bordered table-sm table-secondary small text-center">#}
+{#                        {% endif %}#}
+{#                        <tr>#}
+{#                            {% for addr in week_addr %}#}
+{#                                <th>{{ addr }}</th>#}
+{#                            {% endfor %}#}
+{#                        </tr>#}
+{#                        {% for weeks in monthInfo %}#}
+{#                            <tr>#}
+{#                                {% for day in weeks %}#}
+{#                                    {% if day == 0 %}#}
+{#                                        <td>&nbsp</td>#}
+{#                                    {% elif _month== true and day == dt_now.day %}#}
+{#                                        <td style="background-color:hotpink;">{{ day }}</td>#}
+{#                                    {% else %}#}
+{#                                        <td>{{ day }}</td>#}
+{#                                    {% endif %}#}
+{#                                {% endfor %}#}
+{#                            </tr>#}
+{#                        {% endfor %}#}
+{#                    {% endwith %}#}
+{#                    </table>#}
+{#                </div>#}
+{#            {% endfor %}#}
         </div>
     </div>
 {% endblock %}

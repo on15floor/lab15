@@ -17,7 +17,7 @@ from services.tinkoff import Tinkoff
 from utils.git import get_gitlog
 from utils.mongodb_wrap import MongoDB
 from utils.apple_music import playlist_generator
-from utils.utils import get_markdown, get_ip, gen_calender, get_this_month_abbr
+from utils.utils import get_markdown, get_ip, Calendar
 
 
 UNITY_GAMES = ('simple_cube', 'delimiter', 'kot_guide')
@@ -123,9 +123,10 @@ def utils_apple_music():
 
 @app.route('/utils/calendar', methods=['GET', 'POST'])
 def utils_calendar():
-    return render_template(
-        'utils/calendar.html', this_month=get_this_month_abbr(),
-        content=dict(gen_calender()))
+    return render_template('utils/calendar.html', content=Calendar().gen())
+    # return render_template(
+    #     'utils/calendar.html', this_month=get_this_month_abbr(),
+    #     content=dict(gen_calender()))
 
 
 @app.route('/blog')

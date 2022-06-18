@@ -67,3 +67,15 @@ body {
     border-radius: 50%;
     background: #202529;
 }
+
+.calendar_this_month {
+    background-color: rgba(200,210,210,0.8);
+}
+
+.calendar_this_day {
+    background-color: hotpink;
+}
+
+.calendar_weekend {
+    background-color: rgba(80,110,110,0.8);
+}
