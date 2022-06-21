@@ -21,7 +21,7 @@
                                 {% for day, day_data in weeks_data.items() %}
                                     {% if day_data.current_day == True %}
                                         <td class="calendar_this_day">{{ day_data.day | safe}}</td>
-                                    {% elif day_data.weekend == True %}
+                                    {% elif day_data.weekend == True and day_data.day != "&nbsp" %}
                                         <td class="calendar_weekend">{{ day_data.day | safe}}</td>
                                     {% else %}
                                         <td>{{ day_data.day | safe}}</td>
