@@ -69,13 +69,13 @@ body {
 }
 
 .calendar_this_month {
-    background-color: rgba(200,210,210,0.8);
+    background-color: #c8d2d2;
 }
 
 .calendar_this_day {
-    background-color: hotpink;
+    background-color: #96be78;
 }
 
 .calendar_weekend {
-    background-color: rgba(80,110,110,0.8);
+    background-color: #506e6e;
 }
