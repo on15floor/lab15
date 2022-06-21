@@ -32,39 +32,6 @@
                     </table>
                 </div>
             {% endfor %}
-{#            {% for month_addr,monthInfo in content.items() %}#}
-{#                <div class="col-md-3">#}
-{#                    <h6 class="text-center">{{ month_addr }}</h6>#}
-{#                    {% with _month=false %}#}
-{#                        {% if month_addr == this_month %}#}
-{#                            <table style='background-color:#a6e1ec'#}
-{#                                   class="table table-bordered table-sm small text-center">#}
-{#                            {% set _month = true %}#}
-{#                        {% else %}#}
-{#                            <table class="table table-bordered table-sm table-secondary small text-center">#}
-{#                        {% endif %}#}
-{#                        <tr>#}
-{#                            {% for addr in week_addr %}#}
-{#                                <th>{{ addr }}</th>#}
-{#                            {% endfor %}#}
-{#                        </tr>#}
-{#                        {% for weeks in monthInfo %}#}
-{#                            <tr>#}
-{#                                {% for day in weeks %}#}
-{#                                    {% if day == 0 %}#}
-{#                                        <td>&nbsp</td>#}
-{#                                    {% elif _month== true and day == dt_now.day %}#}
-{#                                        <td style="background-color:hotpink;">{{ day }}</td>#}
-{#                                    {% else %}#}
-{#                                        <td>{{ day }}</td>#}
-{#                                    {% endif %}#}
-{#                                {% endfor %}#}
-{#                            </tr>#}
-{#                        {% endfor %}#}
-{#                    {% endwith %}#}
-{#                    </table>#}
-{#                </div>#}
-{#            {% endfor %}#}
         </div>
     </div>
 {% endblock %}
