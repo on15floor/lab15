@@ -1,5 +1,4 @@
 import math
-from typing import List
 from datetime import datetime, timedelta
 
 import requests
@@ -108,25 +107,23 @@ class Blog(BaseModel):
         return math.ceil(self.get_tabel_rows_number() / self.posts_per_page)
 
     @staticmethod
-    def _fix_date_fmt(posts: List[dict]):
-        for post in posts:
-            dt = post['date'].split('.')[0]
-            time_obj = datetime.strptime(dt, '%Y-%m-%d %H:%M:%S')
-            post['date'] = time_obj.strftime('%d-%m-%y')
-        if len(posts) != 1:
-            return posts
-        return posts[0]
+    def _fix_date_fmt(post: dict):
+        dt = post['date'].split('.')[0]
+        time_obj = datetime.strptime(dt, '%Y-%m-%d %H:%M:%S')
+        post['date'] = time_obj.strftime('%d-%m-%y')
+        return post
 
     def get_post(self, post_id):
         post = self.select_from_db(where=f'WHERE id={post_id}')
-        return self._fix_date_fmt(post)
+        return self._fix_date_fmt(post[0])
 
     def get_posts(self):
         posts = self.select_from_db_limit(
             limit=self.posts_per_page,
-            offset=self.posts_per_page * (self.current_page - 1)
-        )
-        return self._fix_date_fmt(posts)
+            offset=self.posts_per_page * (self.current_page - 1))
+        for post in posts:
+            self._fix_date_fmt(post)
+        return posts
 
     def commit_post(self, context: dict):
         data = {k: v for k, v in context.items() if k in self.table_columns}
