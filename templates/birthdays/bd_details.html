@@ -10,26 +10,26 @@
     <form method="post">
 
         <input type="text" name="name" id="name" class="form-control"
-               placeholder="ФИО"
+               placeholder="ФИО" title="Type name"
                 {% if birthday %} value="{{ birthday.name }}" {% endif %}><br>
 
         <div class="input-group mb-3">
             <div class="input-group-prepend">
                 <div class="input-group-text">
-                    <input type="checkbox" id="male" name="male"
+                    <input type="checkbox" id="male" name="male" title="Select sex"
                            {% if birthday and birthday.male == 1 %}checked{% endif %}>
                 </div>
             </div>
             <label class="form-control">Пол мужской</label>
         </div>
 
-        <input type="date" id="birthdate" name="birthdate" class="form-control datetimepicker-input"
+        <input type="date" id="birthdate" name="birthdate" class="form-control datetimepicker-input" title="Type date"
                dataformatas="%Y-%m-%d" {% if birthday %} value="{{ birthday.birthdate }}" {% endif %}><br>
 
         <div class="input-group mb-3">
             <div class="input-group-prepend">
                 <div class="input-group-text">
-                    <input type="checkbox" id="birthdate_checked" name="birthdate_checked"
+                    <input type="checkbox" id="birthdate_checked" name="birthdate_checked" title="Checked"
                            {% if birthday and birthday.birthdate_checked == 1 %}checked{% endif %}>
                 </div>
             </div>
@@ -37,7 +37,7 @@
         </div>
 
         <input type="text" name="comment" id="comment" class="form-control"
-               placeholder="Примечание"
+               placeholder="Примечание" title="Type comment"
                 {% if birthday %} value="{{ birthday.comment }}" {% endif %}><br>
 
         <input type="submit" class="btn btn-success" value="Отправить"><br>

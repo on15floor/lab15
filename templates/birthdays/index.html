@@ -11,11 +11,11 @@
     <table class="table table-hover table-striped table-bordered table-sm small table-secondary">
         <thead class="thead-dark">
             <tr class="text-center">
-                <th scope="col" width="50%">Имя</th>
-                <th scope="col" width="5%">Пол</th>
-                <th scope="col" width="10%">ДР</th>
-                <th scope="col" width="10%">Check</th>
-                <th scope="col" width="10%">Примечание</th>
+                <th scope="col" style="width: 50%;">Имя</th>
+                <th scope="col" style="width: 5%;">Пол</th>
+                <th scope="col" style="width: 10%;">ДР</th>
+                <th scope="col" style="width: 10%;">Check</th>
+                <th scope="col" style="width: 10%;">Примечание</th>
             </tr>
         </thead>
         <tbody>
@@ -24,17 +24,17 @@
                 <td><a href="/birthdays/{{ el.id }}/update">[{{ el.age }}] {{ el.name }}</a></td>
                 <td class="text-center">
                     {% if el.male == True %}
-                        <img src="/static/img/birthdays/male.png" alt="" width="15" height="15">
+                        <img src="/static/img/birthdays/male.png" alt="" style="width: 15px; height: 15px">
                     {% else %}
-                        <img src="/static/img/birthdays/female.png" alt="" width="15" height="15">
+                        <img src="/static/img/birthdays/female.png" alt="" style="width: 15px; height: 15px">
                     {% endif %}
                 </td>
                 <td class="text-center">{{ el.birthdate }}</td>
                 <td class="text-center">
                     {% if el.birthdate_checked == True %}
-                        <img src="/static/img/birthdays/checked.png" alt="" width="15" height="15">
+                        <img src="/static/img/birthdays/checked.png" alt="" style="width: 15px; height: 15px">
                     {% else %}
-                        <img src="/static/img/birthdays/non_checked.png" alt="" width="15" height="15">
+                        <img src="/static/img/birthdays/non_checked.png" alt="" style="width: 15px; height: 15px">
                     {% endif %}
                 </td>
                 <td class="text-center">{{ el.comment }}</td>
