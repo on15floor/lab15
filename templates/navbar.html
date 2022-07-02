@@ -40,14 +40,7 @@
                 </div>
             </li>
             {% if current_user.is_authenticated %}
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMoney" role="button"
-                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Money</a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMoney">
-                        <a class="dropdown-item" href="/money/crypto">Crypto</a>
-                        <a class="dropdown-item" href="/money/stocks">Stocks</a>
-                    </div>
-                </li>
+                <li class="nav-item"><a class="nav-link" href="/money/crypto">Crypto</a></li>
                 <li class="nav-item"><a class="nav-link" href="/birthdays/month">BDay</a></li>
             {% endif %}
         </ul>

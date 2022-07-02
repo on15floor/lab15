@@ -13,7 +13,6 @@ from core.decorators import api_token_required
 from services.telegram import TBot
 from services.beget import Crontab
 from services.binance import Binance
-from services.tinkoff import Tinkoff
 from utils.git import get_gitlog
 from utils.mongodb_wrap import MongoDB
 from utils.apple_music import playlist_generator
@@ -229,13 +228,6 @@ def money_crypto():
     return render_template('money/crypto.html',
                            wallet=binance.get_wallet(),
                            deposit=binance.get_deposits())
-
-
-@app.route('/money/stocks')
-@login_required
-def money_stocks():
-    return render_template('money/stocks.html',
-                           portfolio=Tinkoff().get_portfolio())
 
 
 @app.route('/birthdays/<string:scope>/')
