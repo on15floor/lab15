@@ -33,10 +33,8 @@ def index():
 
 @app.route('/ping')
 def ping():
-    return jsonify({
-        'ip': get_ip(request),
-        'stat': Statistic().get()
-    })
+    return jsonify({'ip': get_ip(request),
+                    'stat': Statistic().get()})
 
 
 # noinspection PyUnusedLocal

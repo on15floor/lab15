@@ -35,6 +35,10 @@ def get_file_lines_count(file_path):
         return len(f.readlines())
 
 
+def _get_file_ext(fname):
+    return pathlib.Path(fname).suffix
+
+
 class Calendar:
     def __init__(self):
         self.dt_now = datetime.now()
@@ -115,12 +119,8 @@ class Statistic:
     def get(self):
         result = {k: 0 for k in self.indexed_ext}
         for file in self._get_files():
-            result[self._get_file_ext(file)] += get_file_lines_count(file)
+            result[_get_file_ext(file)] += get_file_lines_count(file)
         return result
-
-    @staticmethod
-    def _get_file_ext(fname):
-        return pathlib.Path(fname).suffix
 
     def _get_files(self):
         for root, dirs, fnames in os.walk(PROJECT_PATH):
@@ -128,5 +128,5 @@ class Statistic:
                 if ignore_dir in dirs:
                     dirs.remove(ignore_dir)
             for fname in fnames:
-                if self._get_file_ext(fname) in self.indexed_ext:
+                if _get_file_ext(fname) in self.indexed_ext:
                     yield os.path.join(root, fname)
