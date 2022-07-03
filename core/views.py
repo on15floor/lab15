@@ -16,7 +16,7 @@ from services.binance import Binance
 from utils.git import get_gitlog
 from utils.mongodb_wrap import MongoDB
 from utils.apple_music import playlist_generator
-from utils.utils import get_markdown, get_ip, Calendar
+from utils.utils import get_markdown, get_ip, Calendar, Statistic
 
 
 UNITY_GAMES = ('simple_cube', 'delimiter', 'kot_guide')
@@ -33,7 +33,10 @@ def index():
 
 @app.route('/ping')
 def ping():
-    return "Requester IP: " + get_ip(request)
+    return jsonify({
+        'ip': get_ip(request),
+        'stat': Statistic().get()
+    })
 
 
 # noinspection PyUnusedLocal

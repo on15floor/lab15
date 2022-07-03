@@ -1,12 +1,13 @@
 import os
 import calendar
+import pathlib
 from datetime import datetime
 from collections import defaultdict
 
 import bcrypt
 import markdown
 
-from config import STATIC_PATH
+from config import STATIC_PATH, PROJECT_PATH
 from core.hardcode import weekends, workdays
 
 
@@ -27,6 +28,11 @@ def hash_pw(password):
 
 def get_ip(request):
     return request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
+
+
+def get_file_lines_count(file_path):
+    with open(file_path, 'r') as f:
+        return len(f.readlines())
 
 
 class Calendar:
@@ -100,3 +106,27 @@ class Calendar:
         pass
 
         return result
+
+
+class Statistic:
+    indexed_ext = ('.css', '.html', '.js', '.md', '.py', '.sql')
+    ignore_dirs = ('venv', 'tmp', '.idea', '.git')
+
+    def get(self):
+        result = {k: 0 for k in self.indexed_ext}
+        for file in self._get_files():
+            result[self._get_file_ext(file)] += get_file_lines_count(file)
+        return result
+
+    @staticmethod
+    def _get_file_ext(fname):
+        return pathlib.Path(fname).suffix
+
+    def _get_files(self):
+        for root, dirs, fnames in os.walk(PROJECT_PATH):
+            for ignore_dir in self.ignore_dirs:
+                if ignore_dir in dirs:
+                    dirs.remove(ignore_dir)
+            for fname in fnames:
+                if self._get_file_ext(fname) in self.indexed_ext:
+                    yield os.path.join(root, fname)
