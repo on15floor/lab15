@@ -10,7 +10,7 @@
         {% include 'dashboard/navbar.html' %}
 
         <div>
-        {% for log in mongo_log %}
+        {% for log in mongo_logs %}
             <details>
                 <summary>
                     <span class="one-dark-text-purple">[{{ log.date }}]</span>
@@ -19,11 +19,10 @@
                     {% else %}
                         <span class="one-dark-text-green">[{{ log.status }}]</span>
                     {% endif %}
-                    {% set url = log.uri.split('?') %}
-                    <span class="one-dark-text-blue">[{{ url[0] }}] - </span> <span>{{ log.message }}</span> <br />
+                    <span class="one-dark-text-blue">[{{ log.short_uri }}] - </span> <span>{{ log.message }}</span> <br />
                 </summary>
                 {% for k, v in log.items() %}
-                    <span class="one-dark-text-orange">{{ k }}:</span> {{ v }} <br />
+                    <span class="one-dark-text-orange">&nbsp;&nbsp;{{ k }}:</span> {{ v }} <br />
                 {% endfor %}
             </details>
         {% endfor %}

@@ -278,14 +278,9 @@ def dashboard_gitlog():
 @app.route('/dashboard/mongolog/<string:state>')
 @login_required
 def dashboard_mongolog(state):
-    logs = []
-    mongo = MongoDB()
-    if state == 'all':
-        logs = mongo.get_logs_all()
-    elif state == 'errors':
-        logs = mongo.get_logs_errors()
-
-    return render_template('dashboard/mongologs.html', mongo_log=list(logs))
+    logs = MongoDB().get_logs_errors() \
+        if state == 'errors' else MongoDB().get_logs_all()
+    return render_template('dashboard/mongologs.html', mongo_logs=logs)
 
 
 @app.route('/dashboard/crontab/')
