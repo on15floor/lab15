@@ -25,7 +25,6 @@ class DataBase:
 
 
 class Tokens:
-    TINKOFF_SECRET_KEY = os.getenv('TINKOFF_SECRET_KEY')
     BINANCE_API_KEY = os.getenv('BINANCE_API_KEY')
     BINANCE_API_SECRET = os.getenv('BINANCE_API_SECRET')
     TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
@@ -33,9 +32,7 @@ class Tokens:
 
 
 class Vars:
-    TINKOFF_TAX_PLUS = os.getenv('TINKOFF_TAX_PLUS')
     HOST_LGN = os.getenv('HOST_LGN')
     HOST_PWD = os.getenv('HOST_PWD')
     HOST_SRV = os.getenv('HOST_SRV')
-    TINKOFF_ACCOUNTS = {'2001148671': 'BASE'}
-    SNOWY_MONTH = (1, 11)
+    SNOWY_MONTH = (1, 12)
