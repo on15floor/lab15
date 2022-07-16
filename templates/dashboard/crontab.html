@@ -1,31 +1,24 @@
-{% extends 'base.html' %}
-{% block title %}Dashboard > Crontab{% endblock %}
-{% block head %}
-    <link rel="stylesheet" href="/static/css/dashboard.css">
+{% extends 'dashboard/base.html' %}
+{% block dashboard_title %}Dashboard > Crontab{% endblock %}
+
+{% block dashboard_body %}
+    {% for task in crontab_tasks %}
+        <span class="one-dark-text-purple">
+            <a href="/dashboard/crontab/{{ task.row_number }}/del"
+               class="btn btn-sm btn-outline-danger py-0" style="font-size: 0.8em;">del</a>
+            {% if task.is_hidden == 0 %}
+                <a href="/dashboard/crontab/{{ task.row_number }}/stop">⏹</a>
+            {% else %}
+                <a href="/dashboard/crontab/{{ task.row_number }}/start">▶️</a>
+            {% endif %}
+            [{{ task.row_number }}]
+        </span>
+        <span class="one-dark-text-blue">[{{ task.minutes }} {{ task.hours }} {{ task.days }} {{ task.months }} {{ task.weekdays }}] - </span>
+        <span>{{ task.command }}</span> <br/>
+    {% endfor %}
 {% endblock %}
 
-{% block body %}
-    <div class="container pt-5 my-3 p-3 one-dark-dashboard-bg rounded shadow-sm">
-
-        {% include 'dashboard/navbar.html' %}
-
-        <div class="small text-monospace one-dark-text-white">
-            {% for task in crontab_tasks %}
-                <span class="one-dark-text-purple">
-                    <a href="/dashboard/crontab/{{ task.row_number }}/del"
-                       class="btn btn-sm btn-outline-danger py-0" style="font-size: 0.8em;">del</a>
-                    {% if task.is_hidden == 0 %}
-                        <a href="/dashboard/crontab/{{ task.row_number }}/stop">⏹</a>
-                    {% else %}
-                        <a href="/dashboard/crontab/{{ task.row_number }}/start">▶️</a>
-                    {% endif %}
-                    [{{ task.row_number }}]
-                </span>
-                <span class="one-dark-text-blue">[{{ task.minutes }} {{ task.hours }} {{ task.days }} {{ task.months }} {{ task.weekdays }}] - </span>
-                <span>{{ task.command }}</span> <br/>
-            {% endfor %}
-        </div>
+{% block dashboard_body_footer %}
     <br/><a href="https://cp.beget.com/crontab/master" target="_blank"
-            class="btn btn-outline-success btn-sm one-dark-text-green">Edit on beget.ru</a>
-    </div>
+            class="btn btn-outline-success btn-sm one-dark-text-green ">Edit on beget.ru</a>
 {% endblock %}

@@ -9,6 +9,7 @@ import markdown
 
 from config import STATIC_PATH, PROJECT_PATH
 from core.hardcode import weekends, workdays
+from services.beget import BegetApi
 
 
 def get_markdown(fname):
@@ -115,11 +116,32 @@ class Calendar:
 class Statistic:
     indexed_ext = ('.css', '.html', '.js', '.md', '.py', '.sql')
     ignore_dirs = ('venv', 'tmp', '.idea', '.git')
+    styles = ['primary', 'info', 'secondary', 'danger', 'success', 'warning']
 
     def get(self):
-        result = {k: 0 for k in self.indexed_ext}
+        return {
+            'code_lines': self._get_code_lines(),
+            'hosting': BegetApi().get_info()
+        }
+
+    def _get_code_lines(self):
+        lines_total = 0
+
+        code_lines = {k: 0 for k in self.indexed_ext}
         for file in self._get_files():
-            result[_get_file_ext(file)] += get_file_lines_count(file)
+            file_lines_count = get_file_lines_count(file)
+            code_lines[_get_file_ext(file)] += file_lines_count
+            lines_total += file_lines_count
+
+        result = dict()
+        i = 0
+        for ext, lines_count in code_lines.items():
+            result[ext[1:]] = {
+                'lines': lines_count,
+                'style': f'bg-{self.styles[i]}',
+                'precent': round((lines_count / lines_total) * 100, 2)
+            }
+            i += 1
         return result
 
     def _get_files(self):

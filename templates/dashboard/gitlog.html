@@ -1,16 +1,6 @@
-{% extends 'base.html' %}
-{% block title %}Dashboard > GitLog{% endblock %}
-{% block head %}
-    <link rel="stylesheet" href="/static/css/dashboard.css">
-{% endblock %}
+{% extends 'dashboard/base.html' %}
+{% block dashboard_title %}Dashboard > GitLog{% endblock %}
 
-{% block body %}
-    <div class="container pt-5 my-3 p-3 one-dark-dashboard-bg rounded shadow-sm">
-
-        {% include 'dashboard/navbar.html' %}
-
-        <div class="small text-monospace one-dark-text-white">
-            {{ git_log | safe }}
-        </div>
-    </div>
+{% block dashboard_body %}
+    {{ git_log | safe }}
 {% endblock %}

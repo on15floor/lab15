@@ -11,7 +11,7 @@ from core.models import (
     NoSmokingStages, Blog, Chrods, Birthdays, BegetNews, IosSales, Delimiter)
 from core.decorators import api_token_required
 from services.telegram import TBot
-from services.beget import Crontab
+from services.beget import BegetApi
 from services.binance import Binance
 from utils.git import get_gitlog
 from utils.mongodb_wrap import MongoDB
@@ -33,8 +33,7 @@ def index():
 
 @app.route('/ping')
 def ping():
-    return jsonify({'ip': get_ip(request),
-                    'stat': Statistic().get()})
+    return jsonify(get_ip(request))
 
 
 # noinspection PyUnusedLocal
@@ -270,6 +269,12 @@ def birthdays_update(birthday_id):
     return redirect('/birthdays/month/')
 
 
+@app.route('/dashboard')
+@login_required
+def dashboard():
+    return render_template('dashboard/index.html', data=Statistic().get())
+
+
 @app.route('/dashboard/gitlog/')
 @login_required
 def dashboard_gitlog():
@@ -287,28 +292,28 @@ def dashboard_mongolog(state):
 @app.route('/dashboard/crontab/')
 @login_required
 def dashboard_crontab():
-    tasks = Crontab().tasks_get()
+    tasks = BegetApi().get_tasks()
     return render_template('dashboard/crontab.html', crontab_tasks=tasks)
 
 
 @app.route('/dashboard/crontab/<int:task_id>/del')
 @login_required
 def dashboard_crontab_del(task_id):
-    Crontab().task_del(task_id)
+    BegetApi().task_del(task_id)
     return redirect('/dashboard/crontab/')
 
 
 @app.route('/dashboard/crontab/<int:task_id>/stop')
 @login_required
 def dashboard_crontab_stop(task_id):
-    Crontab().task_change_state(task_id, 1)
+    BegetApi().task_change_state(task_id, 1)
     return redirect('/dashboard/crontab/')
 
 
 @app.route('/dashboard/crontab/<int:task_id>/start')
 @login_required
 def dashboard_crontab_start(task_id):
-    Crontab().task_change_state(task_id, 0)
+    BegetApi().task_change_state(task_id, 0)
     return redirect('/dashboard/crontab/')
 
 

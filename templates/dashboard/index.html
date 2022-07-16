@@ -1,0 +1,58 @@
+{% extends 'dashboard/base.html' %}
+{% block dashboard_title %}Dashboard > Main{% endblock %}
+
+{% block dashboard_body %}
+    {% set hosting = data.get('hosting') %}
+    {% set hardware = hosting.get('hardware') %}
+
+    <span class="one-dark-text-blue">
+        <b>Hosting</b> (expires: {{ hosting.get('user_block_date') }},
+        after {{ hosting.get('user_days_to_block') }} days)
+    </span>
+    <div class="row row-cols-1 row-cols-md-3">
+        {% for name, info in hardware.items() %}
+        <div class="col mb-4">
+            <div class="card h-100 border-primary card-dark">
+                <div class="card-body">
+                    <h6 class="one-dark-text-green">{{ name }}</h6>
+                    <p class="small text-monospace">
+                        {% if name == 'CPU' %}
+                            <span class="one-dark-text-orange">Name: </span>{{ info.get('name') }} <br/>
+                            <span class="one-dark-text-orange">Uptime (days): </span>{{ info.get('uptime') }} <br/>
+                        {% else %}
+                            <span class="one-dark-text-orange">Total: </span>{{ info.get('total') }} <br/>
+                            <span class="one-dark-text-orange">Used: </span>{{ info.get('used') }} <br/>
+                        {% endif %}
+                            <span class="one-dark-text-purple">{{ info.get('used_percent') }}%</span>
+                    </p>
+                    <div class="progress" style="height: 5px;">
+                        <div class="progress-bar bg-success" role="progressbar"
+                             style="width:{{ info.get('used_percent') }}%">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% set code_lines = data.get('code_lines') %}
+    <span class="one-dark-text-blue"><b>Statistic</b></span><br/>
+    <span>For the functionality of the site was written (lines):</span><br/>
+    <div class="progress">
+    {% for ext, data in code_lines.items() %}
+        <div class="progress-bar {{ data.get('style') }}" role="progressbar" style="width: {{ data.get('precent') }}%">
+            {{ ext }}
+        </div>
+    {% endfor %}
+    </div>
+    <table class="table table-sm small">
+        <thead class="thead-dark">
+            <tr class="text-center">
+                {% for ext, data in code_lines.items() %}
+                    <th scope="col" style="width: {{ data.get('precent') }}%;">{{ data.get('lines') }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+    </table>
+{% endblock %}

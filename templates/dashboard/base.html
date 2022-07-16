@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}{% block dashboard_title %}{% endblock %}{% endblock %}
+{% block head %}
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+{% endblock %}
+
+{% block body %}
+    <div class="container pt-5 my-3 p-3 one-dark-dashboard-bg rounded shadow-sm">
+        {% include 'dashboard/navbar.html' %}
+
+        <div class="small text-monospace one-dark-text-white">
+            <br/>
+            {% block dashboard_body %}{% endblock %}
+        </div>
+        {% block dashboard_body_footer %}{% endblock %}
+    </div>
+{% endblock %}
