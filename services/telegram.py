@@ -6,7 +6,7 @@ from services.ip_api import IpApi
 from services.dpaste import DPaste
 
 
-BIRTHDAYS_FORMAT = """🎂Сегодня свои дни рождения празднуют:\n{birthdays}"""
+BIRTHDAYS_FORMAT = """🎂Дни рождения сегодня:\n{birthdays}"""
 BEGET_NEWS_FROMAT = """ℹ️Beget news:\n{news}"""
 IOS_SALE_FORMAT = """{game_name}
 {sale_percent} ({price_old} ₽ → <b>{price_new} ₽</b>)
