@@ -2,6 +2,17 @@
 {% block dashboard_title %}Dashboard > Crontab{% endblock %}
 
 {% block dashboard_body %}
+    <div class="container p-3 one-dark-dashboard-bg-info rounded">
+        Crontab decode:<br/>
+        .------------ minute [0 - 59]<br/>
+        |  .---------- hour [0 - 23]<br/>
+        |  |  .-------- day of month [1 - 31]<br/>
+        |  |  |  .------ month [1 - 12]<br/>
+        |  |  |  |  .---- day of week [0 - 6]<br/>
+        |  |  |  |  |<br/>
+        *  *  *  *  * user-name command to be executed<br/>
+    </div>
+    <br/>
     {% for task in crontab_tasks %}
         <span class="one-dark-text-purple">
             <a href="/dashboard/crontab/{{ task.row_number }}/del"

@@ -8,8 +8,7 @@ from bson import json_util
 from config import DataBase
 
 
-URL_REGEX = re.compile(
-    r'(https?://[a-z0-9.:]+/)([a-z0-9/._]+)(\?[a-zA-Z0-9=.%]+)?')
+URL_REGEX = re.compile(r'(https?://[a-z\d.:]+/)([a-z\d/._]+)(\?[a-zA-Z\d=.%]+)?')
 
 
 class MongoDB:
