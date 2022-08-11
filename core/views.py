@@ -123,9 +123,6 @@ def utils_apple_music():
 @app.route('/utils/calendar', methods=['GET', 'POST'])
 def utils_calendar():
     return render_template('utils/calendar.html', content=Calendar().gen())
-    # return render_template(
-    #     'utils/calendar.html', this_month=get_this_month_abbr(),
-    #     content=dict(gen_calender()))
 
 
 @app.route('/blog')
