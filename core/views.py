@@ -122,7 +122,13 @@ def utils_apple_music():
 
 @app.route('/utils/calendar', methods=['GET', 'POST'])
 def utils_calendar():
-    return render_template('utils/calendar.html', content=Calendar().gen())
+    calendar = Calendar()
+    if request.method == 'GET':
+        return render_template('utils/calendar.html', content=calendar.gen())
+
+    calculate = calendar.calculate(dict(list(request.form.items())))
+    return render_template(
+        'utils/calendar.html', content=calendar.gen(), calculate=calculate)
 
 
 @app.route('/blog')

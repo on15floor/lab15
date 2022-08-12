@@ -46,7 +46,7 @@ class Calendar:
         self.this_year = self.dt_now.year
         self.this_date = self.dt_now.strftime('%Y.%m.%d')
 
-    def get_month_abbr(self, month=0) -> str:
+    def _get_month_abbr(self, month=0) -> str:
         month = month if month else self.dt_now.month
         return calendar.month_abbr[month]
 
@@ -89,7 +89,7 @@ class Calendar:
         result = defaultdict(dict)
 
         for month in range(1, 13):
-            month_addr = self.get_month_abbr(month)
+            month_addr = self._get_month_abbr(month)
             digit_days = self._get_digit_days(month)
 
             week_result = dict()
@@ -111,6 +111,25 @@ class Calendar:
         pass
 
         return result
+
+    @staticmethod
+    def calculate(data):
+        date_start = data.get('date_start', None)
+        date_end = data.get('date_end', None)
+        if not date_start or not date_end:
+            return
+
+        date_start = datetime.strptime(date_start, '%Y-%m-%d')
+        date_end = datetime.strptime(date_end, '%Y-%m-%d')
+        if date_start >= date_end:
+            return
+
+        delta_years = date_end.year - date_start.year
+        return {
+            'days': (date_end - date_start).days,
+            'month': 12 * delta_years + date_end.month - date_start.month,
+            'years': delta_years
+        }
 
 
 class Statistic:

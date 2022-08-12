@@ -33,5 +33,45 @@
                 </div>
             {% endfor %}
         </div>
+
+        <div class="alert my-3 alert-theme" role="alert">
+            <h6>Days counter</h6>
+            <form class="text-dark" method="post">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Start date</span>
+                    </div>
+                    <input type="date" id="date_start" name="date_start"
+                           class="form-control datetimepicker-input"
+                           title="Type date" dataformatas="%Y-%m-%d">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">End date</span>
+                    </div>
+                    <input type="date" id="date_end" name="date_end"
+                           class="form-control datetimepicker-input"
+                           title="Type date" dataformatas="%Y-%m-%d">
+                    <div class="input-group-prepend">
+                        <input type="submit" class="btn btn-success" value="Calculate">
+                    </div>
+                </div>
+            </form>
+            <table class="table table-hover table-striped table-bordered table-sm small table-secondary">
+                <tbody>
+                <tr>
+                    <th scope="row" style="width: 10%" id="hash_flask">Days</th>
+                    <td>{% if calculate %}{{ calculate.days }}{% endif %}</td>
+                </tr>
+                <tr>
+                    <th scope="row" style="width: 10%" id="hash_uuid4">Weeks</th>
+                    <td>{% if calculate %}{{ calculate.month }}{% endif %}</td>
+                </tr>
+                <tr>
+                    <th scope="row" style="width: 10%" id="hash_uuid4">Months</th>
+                    <td>{% if calculate %}{{ calculate.years }}{% endif %}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
     </div>
 {% endblock %}
