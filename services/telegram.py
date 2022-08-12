@@ -8,6 +8,7 @@ from services.dpaste import DPaste
 
 BIRTHDAYS_FORMAT = """🎂Дни рождения сегодня:\n{birthdays}"""
 BEGET_NEWS_FROMAT = """ℹ️Beget news:\n{news}"""
+REMINDER_FORMAT = """💡Напоминание:\n{msg}"""
 IOS_SALE_FORMAT = """{game_name}
 {sale_percent} ({price_old} ₽ → <b>{price_new} ₽</b>)
 🔗 <a href="{app_link}">Скачать в App Store</a>"""
@@ -48,6 +49,11 @@ class TBot:
             message = BEGET_NEWS_FROMAT.format(news=news)
             self._send_message(chat_id=chat_id, message=message)
         return len(news.splitlines())
+
+    def send_reminder(self, msg):
+        chat_id = -1001254598595
+        message = REMINDER_FORMAT.format(msg=msg)
+        self._send_message(chat_id=chat_id, message=message)
 
     def send_ios_sale(self, sales):
         if sales:

@@ -9,7 +9,7 @@ from utils.mongodb_wrap import MongoDB
 def api_token_required(func):
     @wraps(func)
     def decorator(*args, **kwargs):
-        req_token = request.args.get("token")
+        req_token = request.args.get('token')
         if not req_token == Tokens.API_TOKEN:
             uri = request.url
             status = 'error'

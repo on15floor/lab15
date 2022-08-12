@@ -340,6 +340,16 @@ def api_get_beget_news():
     return jsonify(status)
 
 
+@app.route('/api/v1.0/send_reminder')
+@api_token_required
+def api_send_reminder():
+    msg = request.args.get('msg')
+    TBot().send_reminder(msg)
+    status = MongoDB().save_log_from_request(
+        request, f'Send a remind: {msg}')
+    return jsonify(status)
+
+
 @app.route('/api/v1.0/get_ios_sale')
 @api_token_required
 def api_get_ios_sale():
