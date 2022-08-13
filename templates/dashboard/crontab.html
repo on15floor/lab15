@@ -24,7 +24,7 @@
             {% endif %}
             [{{ task.row_number }}]
         </span>
-        <span class="one-dark-text-blue">[{{ task.minutes }} {{ task.hours }} {{ task.days }} {{ task.months }} {{ task.weekdays }}] - </span>
+        <span class="one-dark-text-blue">[{{ task.time|safe }}] - </span>
         <span>{{ task.command }}</span> <br/>
     {% endfor %}
 {% endblock %}

@@ -6,10 +6,14 @@ import requests
 
 from config import Vars
 
+REGEX_TOKEN = re.compile(r'\?token=[a-zA-Z\d]*')
 REGEX_LINK = re.compile(r'(https?:\/\/[^?]+)')
 
 
 class BegetApi:
+    TIME_FIELDS = {k: 0 for k in (
+        'minutes', 'hours', 'days', 'months', 'weekdays')}
+
     def __init__(self):
         self.login = Vars.HOST_LGN
         self.password = Vars.HOST_PWD
@@ -55,15 +59,30 @@ class BegetApi:
         }
         return result
 
+    def set_time_chunks_size(self, tasks):
+        for task in tasks:
+            for filed, size in self.TIME_FIELDS.items():
+                cur_field_len = len(task[filed])
+                if cur_field_len > size:
+                    self.TIME_FIELDS[filed] = cur_field_len
+
     def get_tasks(self) -> list:
         response = requests.get(self._url_frmt('cron/getList'))
         tasks_json = response.json()
         tasks = tasks_json['answer']['result']
+        self.set_time_chunks_size(tasks)
 
         for task in tasks:
-            command = task.get('command')
-            link = REGEX_LINK.search(command)
-            task['command'] = link.group(1)
+            # command _fmt
+            command = REGEX_TOKEN.sub('', task.pop('command'))
+            task['command'] = REGEX_LINK.search(command).group(1)
+            # time _fmt
+            time_chunks = []
+            for filed, size in self.TIME_FIELDS.items():
+                t = task.pop(filed).ljust(size, ' ')
+                t = t.replace(' ', '&nbsp')
+                time_chunks.append(t)
+            task['time'] = '&nbsp'.join(time_chunks)
 
         return tasks
 
