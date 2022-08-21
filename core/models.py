@@ -14,6 +14,8 @@ REMIND_DATE_RE = re.compile(r'^[\d,-]*$')
 
 
 class BaseModel:
+    DT_NOW = datetime.now()
+
     def __init__(self):
         self.db = SQLite3Instance(DataBase.SQL_MAIN)
         self.table_name = ''
@@ -65,9 +67,7 @@ class NoSmokingStages(BaseModel):
     def get_stages(self):
         return self.select_from_db()
 
-    @staticmethod
-    def get_statistic(context=None) -> dict:
-        time_now = datetime.now()
+    def get_statistic(self, context=None) -> dict:
         data = context if context else hardcode.no_smoking
 
         time_start = datetime.strptime(data.get('time_start'), '%Y-%m-%d')
@@ -76,7 +76,7 @@ class NoSmokingStages(BaseModel):
         price_stop = int(data.get('price_stop'))
 
         days_smoking = time_stop - time_start
-        days_no_smoking = time_now - time_stop
+        days_no_smoking = self.DT_NOW - time_stop
         price_avg = (price_start + price_stop) / 2
         money_spent = days_smoking.days * price_avg
         money_saved = days_no_smoking.days * price_stop
@@ -84,7 +84,7 @@ class NoSmokingStages(BaseModel):
         return {
             'time_start': time_start.strftime('%Y-%m-%d'),
             'time_stop': time_stop.strftime('%Y-%m-%d'),
-            'time_now': time_now.strftime('%Y-%m-%d'),
+            'time_now': self.DT_NOW.strftime('%Y-%m-%d'),
             'days_smoking': (time_stop - time_start).days,
             'days_no_smoking': days_no_smoking.days,
             'price_start': price_start,
@@ -131,7 +131,7 @@ class Blog(BaseModel):
 
     def commit_post(self, context: dict):
         data = {k: v for k, v in context.items() if k in self.table_columns}
-        data.update({'date': datetime.now()})
+        data.update({'date': self.DT_NOW})
         self.insert_to_db(values=data)
 
     def delete_post(self, post_id):
@@ -193,7 +193,7 @@ class Chrods(BaseModel):
         self.delete_from_db(where=f'WHERE id={song_id}')
 
     def commit_song(self, context):
-        context.update({'date': datetime.now()})
+        context.update({'date': self.DT_NOW})
         self.insert_to_db(values=context)
 
     def update_song(self, song_id, context):
@@ -231,10 +231,9 @@ class Birthdays(BaseModel):
 
         return self.update_age(birthdays)
 
-    @staticmethod
-    def update_age(birthdays):
+    def update_age(self, birthdays):
         for el in birthdays:
-            date_now = datetime.now().date()
+            date_now = self.DT_NOW.date()
             birth_date = datetime.strptime(el['birthdate'], '%Y-%m-%d').date()
             el['age'] = int((date_now - birth_date).days / 365.25)
         return birthdays
@@ -260,14 +259,12 @@ class Birthdays(BaseModel):
         context['birthdate_checked'] = bool(context.get('birthdate_checked', None))
         self.update_to_db(values=context, where=f'WHERE id={birthday_id}')
 
-    def api_get_birthdays(self):
-        res = []
+    def get_birthdays_today(self):
         birthdays = self.get_birthdays('day')
         for lucky in birthdays:
             male = '🚹' if lucky['male'] else '🚺'
             checked = '✅' if lucky['birthdate_checked'] else '❌'
-            res.append(f'{male}{checked}{lucky["name"]} [{lucky["age"]} лет]')
-        return '\n'.join(res)
+            yield f'{male}{checked}{lucky["name"]} [{lucky["age"]} лет]'
 
 
 class BegetNews(BaseModel):
@@ -277,10 +274,9 @@ class BegetNews(BaseModel):
         self.table_columns = ['id', 'news', 'date']
         self.order_by = 'ORDER BY date DESC'
 
-    @staticmethod
-    def parse_beget_news():
-        url = f'https://beget.com/ru/news/{datetime.now().year}/'
-        new_date = datetime.now() + timedelta(days=1)
+    def parse_beget_news(self):
+        url = f'https://beget.com/ru/news/{self.DT_NOW.year}/'
+        new_date = self.DT_NOW + timedelta(days=1)
         cookies = {
             'beget': 'begetok',
             'expires': new_date.strftime('%a, %d %b %Y %H:%M:%S GMT')
@@ -295,25 +291,21 @@ class BegetNews(BaseModel):
 
     def clear_old_news(self, news_db):
         for news in news_db:
-            if news['date'][:4] != str(datetime.now().year):
+            if news['date'][:4] != str(self.DT_NOW.year):
                 self.delete_from_db(where=f'WHERE id={news["id"]}')
 
     def news_exist_in_db(self, news):
         return bool(self.select_from_db(where=f'WHERE news = "{news}"'))
 
-    def api_get_beget_news(self):
-        res = []
-
+    def get_beget_news_today(self):
         news_db = self.select_from_db()
         self.clear_old_news(news_db)
 
         news_web = [news for news in self.parse_beget_news()]
         for news in news_web:
             if not self.news_exist_in_db(news):
-                self.insert_to_db(values={'news': news, 'date': datetime.now()})
-                res.append(news)
-
-        return '\n'.join(res)
+                self.insert_to_db(values={'news': news, 'date': self.DT_NOW})
+                yield news
 
 
 class IosSales(BaseModel):
@@ -361,7 +353,7 @@ class IosSales(BaseModel):
 
         for sale in sales_web:
             if not self.sale_exist_in_db(sale['game_name']):
-                sale['date'] = datetime.now()
+                sale['date'] = self.DT_NOW
                 self.insert_to_db(values=sale)
                 result.append(sale)
 
@@ -403,6 +395,29 @@ class Reminerds(BaseModel):
         active_status = remind.get('active', None)
         remind['active'] = False if active_status else True
         self.update_to_db(values=remind, where=f'WHERE id={remind_id}')
+
+    @staticmethod
+    def _time_to_list(line: str):
+        if ',' in line:
+            yield from line.split(',')
+        elif '-' in line:
+            _range = line.split('-')
+            for i in range(int(_range[0]), int(_range[1]) + 1):
+                yield str(i)
+        else:
+            yield line
+
+    def get_reminders_today(self):
+        day_now = str(self.DT_NOW.day)
+        month_now = str(self.DT_NOW.month)
+
+        reminders = self.get_reminders()
+        for remind in reminders:
+            day = remind.get('day', None)
+            month = remind.get('month', None)
+            if day_now in list(self._time_to_list(day)) and \
+                    month_now in list(self._time_to_list(month)):
+                yield remind.get('remind', None)
 
 
 class Delimiter(BaseModel):

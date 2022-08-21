@@ -4,11 +4,13 @@ import telebot
 from config import Tokens, Config
 from services.ip_api import IpApi
 from services.dpaste import DPaste
+from core.models import Reminerds, Birthdays, BegetNews, IosSales
 
 
-BIRTHDAYS_FORMAT = """🎂Дни рождения сегодня:\n{birthdays}"""
-BEGET_NEWS_FROMAT = """ℹ️Beget news:\n{news}"""
-REMINDER_FORMAT = """💡Напоминание:\n{msg}"""
+BIRTHDAYS_HEADER = '🎂<b>Дни рождения сегодня:</b>\n'
+REMINDER_HEADER = '💡<b>Напоминание:</b>\n'
+BEGET_NEWS_HEADER = 'ℹ️<b>Beget news:</b>\n'
+HR_HEADER = f"\n{'-' * 30}\n"
 IOS_SALE_FORMAT = """{game_name}
 {sale_percent} ({price_old} ₽ → <b>{price_new} ₽</b>)
 🔗 <a href="{app_link}">Скачать в App Store</a>"""
@@ -36,26 +38,28 @@ class TBot:
             parse_mode=parse_mode
         )
 
-    def send_birthdays(self, birthdays):
-        if birthdays:
-            chat_id = -1001254598595
-            message = BIRTHDAYS_FORMAT.format(birthdays=birthdays)
-            self._send_message(chat_id=chat_id, message=message)
-        return len(birthdays.splitlines())
-
-    def send_beget_news(self, news):
-        if news:
-            chat_id = -1001254598595
-            message = BEGET_NEWS_FROMAT.format(news=news)
-            self._send_message(chat_id=chat_id, message=message)
-        return len(news.splitlines())
-
-    def send_reminder(self, msg):
+    def send_daily(self):
         chat_id = -1001254598595
-        message = REMINDER_FORMAT.format(msg=msg)
-        self._send_message(chat_id=chat_id, message=message)
+        msg = ''
+        daily_map = {
+            BIRTHDAYS_HEADER: list(Birthdays().get_birthdays_today()),
+            REMINDER_HEADER: list(Reminerds().get_reminders_today()),
+            BEGET_NEWS_HEADER: list(BegetNews().get_beget_news_today())
+        }
 
-    def send_ios_sale(self, sales):
+        for header, data in daily_map.items():
+            if data:
+                if msg:
+                    msg = msg + HR_HEADER
+                msg = msg + header + '\n'.join(data)
+        print(msg)
+        if msg:
+            self._send_message(chat_id=chat_id, message=msg, parse_mode='HTML')
+            return True
+        return False
+
+    def send_ios_sale(self):
+        sales = IosSales().api_get_ios_sale()
         if sales:
             chat_id = -1001560904244
             for game in sales:

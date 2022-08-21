@@ -8,8 +8,7 @@ from flask import request, redirect, render_template, abort, jsonify
 from app import app
 from core.auth import auth_user
 from core.models import (
-    NoSmokingStages, Blog, Chrods, Birthdays, BegetNews, IosSales,
-    Delimiter, Reminerds)
+    NoSmokingStages, Blog, Chrods, Birthdays, Delimiter, Reminerds)
 from core.decorators import api_token_required
 from services.telegram import TBot
 from services.beget import BegetApi
@@ -347,41 +346,19 @@ def dashboard_crontab_start(task_id):
     return redirect('/dashboard/crontab/')
 
 
-@app.route('/api/v1.0/get_birthdays')
+@app.route('/api/v1.0/send_daily')
 @api_token_required
-def api_get_birthdays():
-    birthdays_today = Birthdays().api_get_birthdays()
-    count = TBot().send_birthdays(birthdays_today)
+def api_send_daily():
+    result = TBot().send_daily()
     status = MongoDB().save_log_from_request(
-        request, f'Lucky ones today: {count}')
-    return jsonify(status)
-
-
-@app.route('/api/v1.0/get_beget_news')
-@api_token_required
-def api_get_beget_news():
-    news = BegetNews().api_get_beget_news()
-    count = TBot().send_beget_news(news)
-    status = MongoDB().save_log_from_request(
-        request, f'Beget fresh news: {count}')
-    return jsonify(status)
-
-
-@app.route('/api/v1.0/send_reminder')
-@api_token_required
-def api_send_reminder():
-    msg = request.args.get('msg')
-    TBot().send_reminder(msg)
-    status = MongoDB().save_log_from_request(
-        request, f'Send a remind: {msg}')
+        request, f'Daily report sent: {result}')
     return jsonify(status)
 
 
 @app.route('/api/v1.0/get_ios_sale')
 @api_token_required
 def api_get_ios_sale():
-    sales = IosSales().api_get_ios_sale()
-    count = TBot().send_ios_sale(sales)
+    count = TBot().send_ios_sale()
     status = MongoDB().save_log_from_request(
         request, f'Apptime fresh sales: {count}')
     return jsonify(status)
