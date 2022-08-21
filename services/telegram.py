@@ -11,6 +11,7 @@ BIRTHDAYS_HEADER = '🎂<b>Дни рождения сегодня:</b>\n'
 REMINDER_HEADER = '💡<b>Напоминание:</b>\n'
 BEGET_NEWS_HEADER = 'ℹ️<b>Beget news:</b>\n'
 HR_HEADER = f"\n{'-' * 30}\n"
+
 IOS_SALE_FORMAT = """{game_name}
 {sale_percent} ({price_old} ₽ → <b>{price_new} ₽</b>)
 🔗 <a href="{app_link}">Скачать в App Store</a>"""
