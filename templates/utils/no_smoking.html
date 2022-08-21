@@ -54,7 +54,7 @@
     </div>
 
     <div class="row row-cols-1 row-cols-md-3">
-        {% for el in no_smoking_db %}
+        {% for el in stages %}
         <div class="col mb-4">
             {% if data.time_stop|percent_left(el.time) == 100 %}
             <div class="card h-100 border-primary card-theme">

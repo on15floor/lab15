@@ -38,7 +38,7 @@ def _get_links(soup):
         yield link.get("content")
 
 
-def _get_playlist(playlist):
+def _parse_playlist(playlist):
     response = requests.get(playlist)
     soup = BeautifulSoup(response.text, 'html.parser')
     links = _get_links(soup)
@@ -54,8 +54,8 @@ def _get_playlist(playlist):
         }
 
 
-def playlist_save_or_print(playlist_link, folder=None):
-    songs_data = [s for s in _get_playlist(playlist_link)]
+def playlist_saver(playlist_link, folder=None):
+    songs_data = [s for s in _parse_playlist(playlist_link)]
     if not folder:
         print(songs_data)
         return
@@ -70,8 +70,8 @@ def playlist_save_or_print(playlist_link, folder=None):
                 writer.writerow(song.values())
 
 
-def playlist_generator(playlist_link):
-    songs_data = [s for s in _get_playlist(playlist_link)]
+def playlist_data_gen(playlist_link):
+    songs_data = [s for s in _parse_playlist(playlist_link)]
     if songs_data:
         data = StringIO()
         csv_buffer = csv.writer(data)
@@ -99,6 +99,4 @@ def parse_args():
 
 if __name__ == '__main__':
     args = parse_args()
-    playlist_save_or_print(
-        playlist_link=args.playlist,
-        folder=args.dst_path)
+    playlist_saver(playlist_link=args.playlist, folder=args.dst_path)

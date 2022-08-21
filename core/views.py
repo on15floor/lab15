@@ -14,7 +14,7 @@ from services.beget import BegetApi
 from services.binance import Binance
 from utils.git import get_gitlog
 from utils.mongodb_wrap import MongoDB
-from utils.apple_music import playlist_generator
+from utils.apple_music import playlist_data_gen
 from utils.utils import get_markdown, get_ip, Calendar, Statistic
 
 
@@ -77,16 +77,16 @@ def unity_game(game):
 @app.route('/unity/privacy_policy/<string:game>')
 def unity_privacy_policy(game):
     if game in UNITY_GAMES:
-        game_name = game.replace('_', ' ').title()
-        return render_template('unity/privacy_policy.html', game=game_name)
+        return render_template('unity/privacy_policy.html',
+                               game=game.replace('_', ' ').title())
     abort(404)
 
 
 @app.route('/utils/hints/<string:hint>')
 def utils_hints(hint):
     if hint in HINTS:
-        doc_content = Markup(get_markdown(f'{hint}.md'))
-        return render_template('utils/hints.html', doc=doc_content)
+        return render_template('utils/hints.html',
+                               doc=Markup(get_markdown(f'{hint}.md')))
     abort(404)
 
 
@@ -98,13 +98,10 @@ def utils_converter():
 @app.route('/utils/no_smoking', methods=['GET', 'POST'])
 def utils_no_smoking():
     obj = NoSmokingStages()
+    context = None if request.method == 'GET' else dict(request.form.items())
 
-    data = obj.get_statistic() \
-        if request.method == 'GET' \
-        else obj.get_statistic(dict(list(request.form.items())))
-
-    return render_template('utils/no_smoking.html', data=data,
-                           no_smoking_db=obj.get_stages())
+    return render_template('utils/no_smoking.html', stages=obj.get_stages(),
+                           data=obj.get_statistic(context))
 
 
 @app.route('/utils/apple_music', methods=['GET', 'POST'])
@@ -113,7 +110,7 @@ def utils_apple_music():
         return render_template('utils/apple_music.html')
 
     playlist_link = request.form.get('playlist')
-    response = Response(playlist_generator(playlist_link), mimetype='text/csv')
+    response = Response(playlist_data_gen(playlist_link), mimetype='text/csv')
     response.headers.set(
         "Content-Disposition", "attachment", filename="playlist.csv")
     return response
@@ -121,13 +118,12 @@ def utils_apple_music():
 
 @app.route('/utils/calendar', methods=['GET', 'POST'])
 def utils_calendar():
-    calendar = Calendar()
-    if request.method == 'GET':
-        return render_template('utils/calendar.html', content=calendar.gen())
+    obj = Calendar()
+    calculate = None if request.method == 'GET' \
+        else obj.calculate(dict(request.form.items()))
 
-    calculate = calendar.calculate(dict(list(request.form.items())))
-    return render_template(
-        'utils/calendar.html', content=calendar.gen(), calculate=calculate)
+    return render_template('utils/calendar.html',
+                           content=obj.gen(), calculate=calculate)
 
 
 @app.route('/blog')
@@ -141,8 +137,8 @@ def blog():
 @app.route('/blog/<int:post_id>')
 @login_required
 def blog_post(post_id):
-    post = Blog().get_post(post_id)
-    return render_template('blog/post.html', post=post)
+    return render_template('blog/post.html',
+                           post=Blog().get_post(post_id))
 
 
 @app.route('/blog/create', methods=['POST', 'GET'])
@@ -151,8 +147,7 @@ def blog_create():
     if request.method == 'GET':
         return render_template('blog/post_edit.html')
 
-    context = dict(list(request.form.items()))
-    Blog().commit_post(context)
+    Blog().commit_post(context=dict(request.form.items()))
     return redirect('/blog')
 
 
@@ -170,8 +165,7 @@ def blog_post_update(post_id):
         return render_template('blog/post_edit.html',
                                post=Blog().get_post(post_id))
 
-    context = dict(list(request.form.items()))
-    Blog().update_post(post_id, context)
+    Blog().update_post(post_id, context=dict(request.form.items()))
     return redirect(f'/blog/{post_id}')
 
 
@@ -199,8 +193,7 @@ def chords_create():
     if request.method == 'GET':
         return render_template('chords/song_edit.html')
 
-    context = dict(list(request.form.items()))
-    Chrods().commit_song(context)
+    Chrods().commit_song(context=dict(request.form.items()))
     return redirect(f'/chords/{MUSIC_INSTRUMENT[1]}')
 
 
@@ -218,8 +211,7 @@ def chords_song_update(song_id):
         return render_template('chords/song_edit.html',
                                song=Chrods().get_song(song_id))
 
-    context = dict(list(request.form.items()))
-    Chrods().update_song(song_id, context)
+    Chrods().update_song(song_id, context=dict(request.form.items()))
     return redirect(f'/chords/{MUSIC_INSTRUMENT[1]}')
 
 
@@ -227,8 +219,7 @@ def chords_song_update(song_id):
 @login_required
 def crypto():
     binance = Binance()
-    return render_template('admin/crypto.html',
-                           wallet=binance.get_wallet(),
+    return render_template('admin/crypto.html', wallet=binance.get_wallet(),
                            deposit=binance.get_deposits())
 
 
@@ -237,11 +228,10 @@ def crypto():
 def reminders():
     obj = Reminerds()
     if request.method == 'POST':
-        context = dict(list(request.form.items()))
-        obj.commit_remind(context)
+        obj.commit_remind(context=dict(request.form.items()))
 
-    data = obj.get_reminders()
-    return render_template('admin/reminders.html', reminders=data)
+    return render_template('admin/reminders.html',
+                           reminders=obj.get_reminders())
 
 
 @app.route('/reminders/<int:remind_id>/del')
@@ -273,8 +263,7 @@ def birthdays_create():
     if request.method == 'GET':
         return render_template('admin/birthdays/bd_details.html')
 
-    context = dict(list(request.form.items()))
-    Birthdays().commit_birthday(context)
+    Birthdays().commit_birthday(context=dict(request.form.items()))
     return redirect('/birthdays/month/')
 
 
@@ -288,12 +277,12 @@ def birthdays_del(birthday_id):
 @app.route('/birthdays/<int:birthday_id>/update', methods=['POST', 'GET'])
 @login_required
 def birthdays_update(birthday_id):
+    obj = Birthdays()
     if request.method == 'GET':
         return render_template('admin/birthdays/bd_details.html',
-                               birthday=Birthdays().get_birthday(birthday_id))
+                               birthday=obj.get_birthday(birthday_id))
 
-    context = dict(list(request.form.items()))
-    Birthdays().update_birthday(birthday_id, context)
+    obj.update_birthday(birthday_id, context=dict(request.form.items()))
     return redirect('/birthdays/month/')
 
 
