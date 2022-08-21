@@ -59,7 +59,7 @@ class TBot:
         return False
 
     def send_ios_sale(self):
-        sales = IosSales().api_get_ios_sale()
+        sales = IosSales().get_ios_sale_today()
         if sales:
             chat_id = -1001560904244
             for game in sales:

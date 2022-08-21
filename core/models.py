@@ -346,7 +346,7 @@ class IosSales(BaseModel):
     def sale_exist_in_db(self, name):
         return bool(self.select_from_db(where=f'WHERE game_name = "{name}"'))
 
-    def api_get_ios_sale(self):
+    def get_ios_sale_today(self):
         result = []
         sales_db = self.select_from_db()
         sales_web = [sale for sale in self.parse_sales()]
