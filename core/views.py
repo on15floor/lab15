@@ -8,7 +8,8 @@ from flask import request, redirect, render_template, abort, jsonify
 from app import app
 from core.auth import auth_user
 from core.models import (
-    NoSmokingStages, Blog, Chrods, Birthdays, BegetNews, IosSales, Delimiter)
+    NoSmokingStages, Blog, Chrods, Birthdays, BegetNews, IosSales,
+    Delimiter, Reminerds)
 from core.decorators import api_token_required
 from services.telegram import TBot
 from services.beget import BegetApi
@@ -224,13 +225,20 @@ def chords_song_update(song_id):
     return redirect(f'/chords/{MUSIC_INSTRUMENT[1]}')
 
 
-@app.route('/money/crypto')
+@app.route('/admin/crypto')
 @login_required
-def money_crypto():
+def crypto():
     binance = Binance()
-    return render_template('money/crypto.html',
+    return render_template('admin/crypto.html',
                            wallet=binance.get_wallet(),
                            deposit=binance.get_deposits())
+
+
+@app.route('/admin/reminders')
+@login_required
+def reminders():
+    data = Reminerds().get_reminders()
+    return render_template('admin/reminders.html', reminders=data)
 
 
 @app.route('/birthdays/<string:scope>/')
@@ -239,14 +247,14 @@ def birthdays(scope):
     obj = Birthdays()
     q = request.args.get('q')  # seraching
     data = obj.search(q) if q else obj.get_birthdays(scope)
-    return render_template('birthdays/index.html', birthdays=data)
+    return render_template('admin/birthdays/index.html', birthdays=data)
 
 
 @app.route('/birthdays/create', methods=['POST', 'GET'])
 @login_required
 def birthdays_create():
     if request.method == 'GET':
-        return render_template('birthdays/bd_details.html')
+        return render_template('admin/birthdays/bd_details.html')
 
     context = dict(list(request.form.items()))
     Birthdays().commit_birthday(context)
@@ -264,7 +272,7 @@ def birthdays_del(birthday_id):
 @login_required
 def birthdays_update(birthday_id):
     if request.method == 'GET':
-        return render_template('birthdays/bd_details.html',
+        return render_template('admin/birthdays/bd_details.html',
                                birthday=Birthdays().get_birthday(birthday_id))
 
     context = dict(list(request.form.items()))

@@ -12,8 +12,8 @@ from utils.sqlite_wrap import SQLite3Instance
 class BaseModel:
     def __init__(self):
         self.db = SQLite3Instance(DataBase.SQL_MAIN)
-        self.table_name = str()
-        self.table_columns = list()
+        self.table_name = ''
+        self.table_columns = []
         self.order_by = 'ORDER BY id'
 
     def select_from_db(self, columns=None, where=None):
@@ -363,6 +363,16 @@ class IosSales(BaseModel):
 
         self.clear_old_sales(sales_db)
         return result
+
+
+class Reminerds(BaseModel):
+    def __init__(self):
+        super().__init__()
+        self.table_name = 'main_reminders'
+        self.table_columns = ['id', 'reminder', 'day', 'month', 'active']
+
+    def get_reminders(self):
+        return self.select_from_db()
 
 
 class Delimiter(BaseModel):

@@ -4,10 +4,14 @@
 {% block body %}
 <div class="container pt-5 my-3 p-3 rounded shadow-sm container-theme">
     <h4 class="border-bottom pb-2 mb-2">Дни рождения
-    <a href="/birthdays/month/" class="btn btn-success">Месяц</a>
-    <a href="/birthdays/all/" class="btn btn-warning">Все</a>
-    <a href="/birthdays/m/" class="btn btn-info">М</a>
-    <a href="/birthdays/w/" class="btn btn-primary">Ж</a></h4>
+        <a href="/birthdays/month/" class="btn btn-success btn-sm">Месяц</a>
+        <a href="/birthdays/all/" class="btn btn-warning btn-sm">Все</a>
+        <a href="/birthdays/m/" class="btn btn-info btn-sm">М</a>
+        <a href="/birthdays/w/" class="btn btn-primary btn-sm">Ж</a>
+        {% if current_user.is_authenticated %}
+            <a href="/birthdays/create" class="btn btn-outline-warning btn-sm">Add+</a>
+        {% endif %}
+    </h4>
     <table class="table table-hover table-striped table-bordered table-sm small table-secondary">
         <thead class="thead-dark">
             <tr class="text-center">
@@ -24,17 +28,17 @@
                 <td><a href="/birthdays/{{ el.id }}/update">[{{ el.age }}] {{ el.name }}</a></td>
                 <td class="text-center">
                     {% if el.male == True %}
-                        <img src="/static/img/birthdays/male.png" alt="" style="width: 15px; height: 15px">
+                        <img src="/static/img/icons/male.png" alt="" style="width: 15px; height: 15px">
                     {% else %}
-                        <img src="/static/img/birthdays/female.png" alt="" style="width: 15px; height: 15px">
+                        <img src="/static/img/icons/female.png" alt="" style="width: 15px; height: 15px">
                     {% endif %}
                 </td>
                 <td class="text-center">{{ el.birthdate }}</td>
                 <td class="text-center">
                     {% if el.birthdate_checked == True %}
-                        <img src="/static/img/birthdays/checked.png" alt="" style="width: 15px; height: 15px">
+                        <img src="/static/img/icons/checked.png" alt="" style="width: 15px; height: 15px">
                     {% else %}
-                        <img src="/static/img/birthdays/non_checked.png" alt="" style="width: 15px; height: 15px">
+                        <img src="/static/img/icons/non_checked.png" alt="" style="width: 15px; height: 15px">
                     {% endif %}
                 </td>
                 <td class="text-center">{{ el.comment }}</td>
