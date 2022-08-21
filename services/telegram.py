@@ -53,7 +53,6 @@ class TBot:
                 if msg:
                     msg = msg + HR_HEADER
                 msg = msg + header + '\n'.join(data)
-        print(msg)
         if msg:
             self._send_message(chat_id=chat_id, message=msg, parse_mode='HTML')
             return True

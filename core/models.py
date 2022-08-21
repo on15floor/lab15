@@ -341,7 +341,6 @@ class IosSales(BaseModel):
             delta = sales_db_count - self.sales_limit
             for i in range(1, delta + 1):
                 self.delete_from_db(where=f'WHERE id={sales_db[-i]["id"]}')
-                print(f'del {sales_db[-i]["game_name"]}')
 
     def sale_exist_in_db(self, name):
         return bool(self.select_from_db(where=f'WHERE game_name = "{name}"'))
