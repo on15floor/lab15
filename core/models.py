@@ -418,30 +418,3 @@ class Reminerds(BaseModel):
             if day_now in list(self._time_to_list(day)) and \
                     month_now in list(self._time_to_list(month)):
                 yield remind.get('remind', None)
-
-
-class Delimiter(BaseModel):
-    def __init__(self):
-        super().__init__()
-        self.db = SQLite3Instance(DataBase.SQL_DELIMITER)
-        self.table_name = 'best_scores'
-        self.table_columns = ['user_id', 'user_name', 'best_score']
-        self.order_by = 'ORDER BY best_score DESC'
-        self.best_score_limit = 13
-
-    def _get_best_scores(self):
-        scores = self.select_from_db_limit(
-            limit=self.best_score_limit,
-            offset=0
-        )
-        for i in range(0, len(scores)):
-            yield i+1, scores[i]
-
-    def api_get_best_scores(self):
-        return {k: v for k, v in self._get_best_scores()}
-
-    def api_save_best_score(self, in_data):
-        user_id = in_data['user_id']
-        self.db.delete('best_scores', where=f'WHERE user_id="{user_id}"')
-        self.db.insert('best_scores', in_data)
-        return user_id

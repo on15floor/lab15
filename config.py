@@ -18,7 +18,6 @@ class Config:
 
 class DataBase:
     SQL_MAIN = os.path.join(PROJECT_PATH, 'db/db.sqlite3')
-    SQL_DELIMITER = os.path.join(PROJECT_PATH, 'db/delimiter.sqlite3')
 
     MONGO_USER = os.getenv('MONGO_USER')
     MONGO_PASS = os.getenv('MONGO_PASS')

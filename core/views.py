@@ -7,8 +7,7 @@ from flask import request, redirect, render_template, abort, jsonify
 
 from app import app
 from core.auth import auth_user
-from core.models import (
-    NoSmokingStages, Blog, Chrods, Birthdays, Delimiter, Reminerds)
+from core.models import (NoSmokingStages, Blog, Chrods, Birthdays, Reminerds)
 from core.decorators import api_token_required
 from services.telegram import TBot
 from services.beget import BegetApi
@@ -361,16 +360,4 @@ def api_get_ios_sale():
     count = TBot().send_ios_sale()
     status = MongoDB().save_log_from_request(
         request, f'Apptime fresh sales: {count}')
-    return jsonify(status)
-
-
-@app.route('/api/v1.0/delimiter', methods=['POST', 'GET'])
-@api_token_required
-def api_delimiter():
-    if request.method == 'GET':
-        return jsonify(Delimiter().api_get_best_scores())
-
-    user_id = Delimiter().api_save_best_score(request.json)
-    status = MongoDB().save_log_from_request(
-        request, f'New Delimiter record for {user_id}')
     return jsonify(status)
