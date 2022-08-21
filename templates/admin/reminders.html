@@ -1,34 +1,58 @@
 {% extends 'base.html' %}
-{% block title %}Аккорды | {{ instrument }}{% endblock %}
+{% block title %}Напоминания{% endblock %}
 
 {% block body %}
 <div class="container pt-5 my-3 p-3 rounded shadow-sm container-theme">
-    <h4 class="border-bottom pb-2 mb-2 border-gray"> Напоминания
-    {% if current_user.is_authenticated %}
-        <a href="/" class="btn btn-outline-warning btn-sm">Add+</a>
-    {% endif %}
-    </h4>
-<table class="table table-hover table-striped table-bordered table-sm small table-secondary">
+    <h4 class="border-bottom pb-2 mb-2 border-gray">Напоминания</h4>
+
+    <div class="alert my-3 alert-theme" role="alert">
+        <form method="post">
+            <div class="form-row align-items-center">
+                <div class="col-7">
+                    <input type="text" id="remind" name="remind" title="Remind"
+                           class="form-control" maxlength="100" placeholder="Remind">
+                </div>
+                <div class="col">
+                    <input type="text" id="day" name="day" title="Day"
+                               class="form-control" maxlength="100" placeholder="Day">
+                </div>
+                <div class="col">
+                    <input type="text" id="month" name="month" title="Month"
+                               class="form-control" maxlength="100" placeholder="Month">
+                </div>
+                <div class="col">
+                    <input type="submit" class="btn btn-success" value="Add">
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <table class="table table-hover table-striped table-bordered table-sm small table-secondary">
         <thead class="thead-dark">
             <tr class="text-center">
-                <th scope="col" style="width: 60%;">Reminder</th>
-                <th scope="col" style="width: 15%;">Day</th>
-                <th scope="col" style="width: 15%;">Month</th>
+                <th scope="col" style="width: 65%;">Reminder</th>
+                <th scope="col" style="width: 10%;">Day</th>
+                <th scope="col" style="width: 10%;">Month</th>
                 <th scope="col" style="width: 10%;">Active</th>
+                <th scope="col" style="width: 5%;">Delete</th>
             </tr>
         </thead>
         <tbody>
             {% for el in reminders %}
             <tr>
-                <td><a href="/{{ el.id }}/update">{{ el.reminder }}</a></td>
+                <td>{{ el.remind }}</td>
                 <td class="text-center">{{ el.day }}</td>
                 <td class="text-center">{{ el.month }}</td>
                 <td class="text-center">
-                    {% if el.active == True %}
-                        <img src="/static/img/icons/checked.png" alt="" style="width: 15px; height: 15px">
+                    {% if el.active == 1 %}
+                        <a href="/reminders/{{ el.id }}/change_status"><img src="/static/img/icons/checked.png" alt="" style="width: 15px; height: 15px"></a>
                     {% else %}
-                        <img src="/static/img/icons/non_checked.png" alt="" style="width: 15px; height: 15px">
+                        <a href="/reminders/{{ el.id }}/change_status"><img src="/static/img/icons/non_checked.png" alt="" style="width: 15px; height: 15px">️</a>
                     {% endif %}
+                </td>
+                <td class="text-center">
+                    <a href="/reminders/{{ el.id }}/del"
+               class="btn btn-sm btn-outline-danger py-0" style="font-size: 0.8em;">del</a>
                 </td>
             </tr>
             {% endfor %}

@@ -1,3 +1,4 @@
+import re
 import math
 from datetime import datetime, timedelta
 
@@ -7,6 +8,9 @@ from bs4 import BeautifulSoup
 from core import hardcode
 from config import DataBase
 from utils.sqlite_wrap import SQLite3Instance
+
+
+REMIND_DATE_RE = re.compile(r'^[\d,-]*$')
 
 
 class BaseModel:
@@ -369,10 +373,36 @@ class Reminerds(BaseModel):
     def __init__(self):
         super().__init__()
         self.table_name = 'main_reminders'
-        self.table_columns = ['id', 'reminder', 'day', 'month', 'active']
+        self.table_columns = ['id', 'remind', 'day', 'month', 'active']
 
     def get_reminders(self):
         return self.select_from_db()
+
+    @staticmethod
+    def _validate_context(context):
+        remind = context.get('remind', None)
+        if remind:
+            for el in ('day', 'month'):
+                date = context.get(el, None)
+                if date:
+                    if REMIND_DATE_RE.match(date):
+                        return True
+        return False
+
+    def commit_remind(self, context):
+        if not self._validate_context(context):
+            return
+        context['active'] = True
+        self.insert_to_db(values=context)
+
+    def delete_remind(self, remind_id):
+        self.delete_from_db(where=f'WHERE id={remind_id}')
+
+    def change_status(self, remind_id):
+        remind = self.select_from_db_one(where=f'WHERE id={remind_id}')
+        active_status = remind.get('active', None)
+        remind['active'] = False if active_status else True
+        self.update_to_db(values=remind, where=f'WHERE id={remind_id}')
 
 
 class Delimiter(BaseModel):

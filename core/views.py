@@ -225,7 +225,7 @@ def chords_song_update(song_id):
     return redirect(f'/chords/{MUSIC_INSTRUMENT[1]}')
 
 
-@app.route('/admin/crypto')
+@app.route('/crypto')
 @login_required
 def crypto():
     binance = Binance()
@@ -234,11 +234,30 @@ def crypto():
                            deposit=binance.get_deposits())
 
 
-@app.route('/admin/reminders')
+@app.route('/reminders', methods=['POST', 'GET'])
 @login_required
 def reminders():
-    data = Reminerds().get_reminders()
+    obj = Reminerds()
+    if request.method == 'POST':
+        context = dict(list(request.form.items()))
+        obj.commit_remind(context)
+
+    data = obj.get_reminders()
     return render_template('admin/reminders.html', reminders=data)
+
+
+@app.route('/reminders/<int:remind_id>/del')
+@login_required
+def reminders_del(remind_id):
+    Reminerds().delete_remind(remind_id)
+    return redirect('/reminders')
+
+
+@app.route('/reminders/<int:remind_id>/change_status')
+@login_required
+def reminders_change_status(remind_id):
+    Reminerds().change_status(remind_id)
+    return redirect('/reminders')
 
 
 @app.route('/birthdays/<string:scope>/')
