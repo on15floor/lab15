@@ -5,7 +5,7 @@ body {
 }
 
 .carousel {
-  margin: 0 auto;
+    margin: 0 auto;
 }
 
 .theme-btn {
@@ -17,7 +17,7 @@ body {
     padding: 10px;
     background: #ffffff;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(39,38,40,0.4);
+    box-shadow: 0 0 10px rgba(39, 38, 40, 0.4);
 }
 
 .logo-btn {
@@ -25,7 +25,7 @@ body {
     padding: 5px;
     background: #222222;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(255,255,255,0.1);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
 }
 
 @media only screen and (max-width: 767px ) {
@@ -78,4 +78,29 @@ body {
 
 .calendar_weekend {
     background-color: #506e6e;
+}
+
+.form-login {
+    display: none;
+    border: 3px solid #222222;
+    z-index: 9;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Add styles to the form container */
+.form-container {
+    max-width: 400px;
+    padding: 10px;
+}
+
+/* Full-width input fields */
+.form-container input[type=text], .form-container input[type=password] {
+    width: 100%;
+    padding: 15px;
+    margin: 5px 0 22px 0;
+    border: none;
+    background: #f1f1f1;
 }

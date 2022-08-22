@@ -51,18 +51,38 @@
             </li>
             {% endif %}
         </ul>
+        {% if current_user.is_authenticated %}
         <form class="form-inline mt-2 mt-md-0">
             <div class="text-end">
-                {% if current_user.is_authenticated %}
-                    {% if 'birthdays' in request.path %}
-                        <input type="search" class="form-control bg-dark border-secondary text-white" placeholder="Search..." name="q" title="Search">
+                    {% if 'birthdays' in request.path or 'chords' in request.path %}
+                        <input type="search" placeholder="Search..." name="q" title="Search"
+                               class="form-control bg-dark border-secondary text-white">
                     {% endif %}
                     <a href="/dashboard" class="btn btn-outline-info my-2 my-sm-0 btn-sm">Dashboard</a>
                     <a href="/logout" class="btn btn-outline-danger my-2 my-sm-0 btn-sm">🔴</a>
-                {% else %}
-                    <a href="/login" class="btn btn-outline-success my-2 my-sm-0 btn-sm">Login</a>
-                {% endif %}
             </div>
         </form>
+        {% else %}
+        <span class="mt-2 mt-md-0">
+            <button class="btn btn-outline-success my-2 my-sm-0 btn-sm" id="loginBtn" onclick="openForm()">Login</button>
+        </span>
+        {% endif %}
     </div>
 </nav>
+
+{% if not current_user.is_authenticated %}
+    <div class="form-login" id="fromLogin">
+        <form class="form-container">
+            <h4 class="text-center">Login</h4>
+            <input type="text" id="username" required
+                   placeholder="Enter Login" title="Login" >
+            <input type="password" id="password" required
+                   placeholder="Enter Password" title="Password">
+
+            <button class="btn btn-success btn-block" type="button" id="loginBtn" onclick="login()">Login</button>
+            <button class="btn btn-warning btn-block" type="button" onclick="closeForm()">Cancel</button>
+        </form>
+    </div>
+
+    <script src="/static/js/login.js"></script>
+{% endif %}

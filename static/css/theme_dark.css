@@ -34,3 +34,11 @@ h4, h6 {
 .snowflake {
     filter: drop-shadow(0 0 10px white);
 }
+
+.form-container {
+    background-color: rgb(30, 53, 57);
+}
+
+.form-container input[type=text], .form-container input[type=password] {
+    background: #c5deda;
+}

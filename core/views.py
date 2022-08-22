@@ -2,7 +2,7 @@ import traceback
 
 from markupsafe import Markup
 from werkzeug.wrappers import Response
-from flask_login import login_user, login_required, logout_user
+from flask_login import login_required, logout_user
 from flask import request, redirect, render_template, abort, jsonify
 
 from app import app
@@ -48,16 +48,9 @@ def internal_error(error):
     return render_template('500.html'), 500
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['POST'])
 def login():
-    if request.method == 'GET':
-        return render_template('signin.html')
-
-    user = auth_user(request.form['username'], request.form['password'])
-    if user:
-        login_user(user)
-        return redirect('/')
-    return redirect('/login')
+    return jsonify(auth_user(request.json))
 
 
 @app.route('/logout')

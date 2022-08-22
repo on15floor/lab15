@@ -1,4 +1,4 @@
-from flask_login import LoginManager, UserMixin
+from flask_login import LoginManager, UserMixin, login_user
 
 from config import Config
 from utils.utils import check_pw
@@ -24,19 +24,14 @@ class Init:
             user.id = username
             return user
 
-        @login_manager.request_loader
-        def request_loader(request):
-            username = request.form.get('username')
-            if username not in USERS:
-                return
 
-            user = User()
-            user.id = username
-            return user
-
-
-def auth_user(username: str, password: str) -> User:
+def auth_user(user_data: dict) -> bool:
+    username = user_data.get('username', None)
+    password = user_data.get('password', None)
     if username in USERS and check_pw(password, USERS[username]['password']):
         user = User()
         user.id = username
-        return user
+        if user:
+            login_user(user=user, remember=True)
+            return True
+    return False
