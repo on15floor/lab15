@@ -80,6 +80,7 @@ body {
     background-color: #506e6e;
 }
 
+/*Login Fomr*/
 .form-login {
     display: none;
     border: 3px solid #222222;
@@ -90,13 +91,11 @@ body {
     transform: translate(-50%, -50%);
 }
 
-/* Add styles to the form container */
 .form-container {
     max-width: 400px;
     padding: 10px;
 }
 
-/* Full-width input fields */
 .form-container input[type=text], .form-container input[type=password] {
     width: 100%;
     padding: 15px;

@@ -2,7 +2,6 @@ let snowflakesCount = 50;
 let bodyHeightPx = document.body.offsetHeight;
 let pageHeightVH = (100 * bodyHeightPx / window.innerHeight);
 
-// Creating snowflakes
 function spawnSnow(snowDensity = 200) {
     snowDensity -= 1;
 
@@ -14,14 +13,12 @@ function spawnSnow(snowDensity = 200) {
     }
 }
 
-// Append style for each snowflake to the head
 function addCss(rule) {
     let css = document.createElement('style');
     css.appendChild(document.createTextNode(rule)); // Support for the rest
     document.getElementsByTagName("head")[0].appendChild(css);
 }
 
-// Math
 function randomInt(value = 100){
     return Math.floor(Math.random() * value) + 1;
 }
@@ -32,7 +29,6 @@ function randomRange(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// Create style for snowflake
 function spawnSnowCSS(snowDensity = 200){
     let snowflakeName = "snowflake";
     let rule = ``;
@@ -71,7 +67,6 @@ function spawnSnowCSS(snowDensity = 200){
     addCss(rule);
 }
 
-// Load the rules and execute after the DOM loads
 window.onload = function() {
     spawnSnowCSS(snowflakesCount);
     spawnSnow(snowflakesCount);
