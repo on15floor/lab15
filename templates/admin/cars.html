@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block title %}Машины{% endblock %}
+
+{% block body %}
+<div class="container pt-5 my-3 p-3 rounded shadow-sm container-theme">
+    <h4 class="border-bottom pb-2 mb-2">Машины</h4>
+
+    {% for car in cars %}
+        {% set car_data = car.car_data %}
+        {% set works_regular = car.works_regular %}
+        {% set works_done = car.works_done %}
+
+        <h6>
+            {% if car_data.brand == 'BMW' %}
+                {% set icon = '/static/img/icons/bmw.png' %}
+            {% endif %}
+            <img src="{{ icon }}" alt="model_logo">
+            {{ car_data.brand }} {{ car_data.model }} ({{ car_data.year }})
+        </h6>
+
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active btn-sm" id="home-tab" data-toggle="tab"
+                        data-target="#home" type="button" role="tab"
+                        aria-controls="home" aria-selected="true">Home
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link btn-sm" id="regular-tab" data-toggle="tab"
+                        data-target="#regular" type="button" role="tab"
+                        aria-controls="regular" aria-selected="false">Regular
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link btn-sm" id="works-tab" data-toggle="tab"
+                        data-target="#works" type="button" role="tab"
+                        aria-controls="works" aria-selected="false">Works
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="home" role="tabpanel">
+                <div class="alert my-3 alert-theme" role="alert">
+                    <span><b>VIN:</b> {{ car_data.vin }}]</span><br/>
+                    <span><b>Покупка:</b> {{ car_data.purchase_date }}
+                        [{{ car_data.price }} {{ car_data.currency }}]</span><br/>
+                    <span><b>Информация:</b> {{ car_data.comment }}</span><br/>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="regular" role="tabpanel">
+                <div class="alert my-3 alert-theme" role="alert">
+                    <table class="table table-hover table-striped table-bordered table-sm small table-secondary">
+                            <thead class="thead-dark">
+                            <tr class="text-center">
+                                <th scope="col" style="width: 20%;">Пробег</th>
+                                <th scope="col" style="width: 20%;">Месяц</th>
+                                <th scope="col" style="width: 60%;">Работа</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for el in works_regular %}
+                                <tr>
+                                    <td class="text-center">{{ el.mileage }}</td>
+                                    <td class="text-center">{{ el.month_delta }}</td>
+                                    <td>{{ el.work_name }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="works" role="tabpanel">
+                <div class="alert my-3 alert-theme" role="alert">
+                    <table class="table table-hover table-striped table-bordered table-sm small table-secondary">
+                        <thead class="thead-dark">
+                        <tr class="text-center">
+                            <th scope="col" style="width: 10%;">Пробег</th>
+                            <th scope="col" style="width: 10%;">Дата</th>
+                            <th scope="col" style="width: 50%;">Работа</th>
+                            <th scope="col" style="width: 10%;">Тип</th>
+                            <th scope="col" style="width: 10%;">Цена</th>
+                            <th scope="col" style="width: 10%;">Валюта</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for el in works_done %}
+                            {% if el.work_type == 'regular' %}
+                                {% set badge = 'success'%}
+                            {% elif el.work_type == 'replacement' %}
+                                {% set badge = 'info'%}
+                            {% else %}
+                                {% set badge = 'primary'%}
+                            {% endif %}
+                            <tr>
+                                <td class="text-center">{{ el.mileage }}</td>
+                                <td class="text-center">{{ el.work_date }}</td>
+                                <td>{{ el.work_name }}</td>
+                                <td class="text-center">
+                                    <span class="badge badge-{{ badge }}">{{ el.work_type }}</span>
+                                </td>
+                                <td class="text-center">{{ el.price }}</td>
+                                <td class="text-center">{{ el.currency }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+</div>
+{% endblock %}

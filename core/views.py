@@ -7,7 +7,8 @@ from flask import request, redirect, render_template, abort, jsonify
 
 from app import app
 from core.auth import auth_user
-from core.models import (NoSmokingStages, Blog, Chrods, Birthdays, Reminerds)
+from core.models import (
+    NoSmokingStages, Blog, Chrods, Birthdays, Reminerds, CarsManager)
 from core.decorators import api_token_required
 from services.telegram import TBot
 from services.beget import BegetApi
@@ -225,6 +226,13 @@ def reminders():
 
     return render_template('admin/reminders.html',
                            reminders=obj.get_reminders())
+
+
+@app.route('/cars', methods=['GET'])
+@login_required
+def cars():
+    obj = CarsManager()
+    return render_template('admin/cars.html', cars=obj.get_data())
 
 
 @app.route('/reminders/<int:remind_id>/del')

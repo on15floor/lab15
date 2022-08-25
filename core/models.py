@@ -417,3 +417,58 @@ class Reminerds(BaseModel):
             if day_now in list(self._time_to_list(day)) and \
                     month_now in list(self._time_to_list(month)):
                 yield remind.get('remind', None)
+
+
+class CarMain(BaseModel):
+    def __init__(self):
+        super().__init__()
+        self.table_name = 'car_main'
+        self.table_columns = ['id', 'brand', 'model', 'year', 'vin',
+                              'purchase_date', 'price', 'currency',
+                              'active', 'comment']
+
+    def get_cars(self):
+        return self.select_from_db(where=f'WHERE active=1')
+
+
+class CarWorksRegular(BaseModel):
+    def __init__(self, car_id):
+        super().__init__()
+        self.table_name = 'car_works_regular'
+        self.table_columns = ['car_id', 'mileage', 'month_delta', 'work_name']
+        self.order_by = 'ORDER BY month_delta'
+        self.works_regular = self.select_from_db(where=f'WHERE car_id={car_id}')
+
+    @property
+    def data(self):
+        return self.works_regular
+
+
+class CarWorksDone(BaseModel):
+    def __init__(self, car_id):
+        super().__init__()
+        self.table_name = 'car_works_done'
+        self.table_columns = ['car_id', 'mileage', 'work_date', 'work_name',
+                              'work_type', 'price', 'currency']
+        self.order_by = 'ORDER BY mileage'
+        self.works_done = self.select_from_db(where=f'WHERE car_id={car_id}')
+
+    @property
+    def data(self):
+        return self.works_done
+
+
+class CarsManager:
+    def __init__(self):
+        self.cars = CarMain().get_cars()
+        self.result = list()
+
+    def get_data(self):
+        for car in self.cars:
+            car_id = car['id']
+            self.result.append({
+                'car_data': car,
+                'works_regular': CarWorksRegular(car_id).data,
+                'works_done': CarWorksDone(car_id).data
+            })
+        return self.result
