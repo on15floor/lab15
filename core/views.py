@@ -217,6 +217,23 @@ def crypto():
                            deposit=binance.get_deposits())
 
 
+@app.route('/cars', methods=['POST', 'GET'])
+@login_required
+def cars():
+    obj = CarsManager()
+    if request.method == 'POST':
+        obj.commit_work(context=dict(request.form.items()))
+
+    return render_template('admin/cars.html', cars=obj.get_data())
+
+
+@app.route('/cars/<int:work_id>/work_del')
+@login_required
+def cars_work_del(work_id):
+    CarsManager().delete_work(work_id)
+    return redirect('/cars')
+
+
 @app.route('/reminders', methods=['POST', 'GET'])
 @login_required
 def reminders():
@@ -226,13 +243,6 @@ def reminders():
 
     return render_template('admin/reminders.html',
                            reminders=obj.get_reminders())
-
-
-@app.route('/cars', methods=['GET'])
-@login_required
-def cars():
-    obj = CarsManager()
-    return render_template('admin/cars.html', cars=obj.get_data())
 
 
 @app.route('/reminders/<int:remind_id>/del')

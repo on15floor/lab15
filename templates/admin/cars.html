@@ -20,22 +20,13 @@
 
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active btn-sm" id="home-tab" data-toggle="tab"
-                        data-target="#home" type="button" role="tab"
-                        aria-controls="home" aria-selected="true">Home
-                </button>
+                <button class="nav-link active btn-sm" id="home-tab" data-toggle="tab" data-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Home</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link btn-sm" id="regular-tab" data-toggle="tab"
-                        data-target="#regular" type="button" role="tab"
-                        aria-controls="regular" aria-selected="false">Regular
-                </button>
+                <button class="nav-link btn-sm" id="regular-tab" data-toggle="tab" data-target="#regular" type="button" role="tab" aria-controls="regular" aria-selected="false">Regular</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link btn-sm" id="works-tab" data-toggle="tab"
-                        data-target="#works" type="button" role="tab"
-                        aria-controls="works" aria-selected="false">Works
-                </button>
+                <button class="nav-link btn-sm" id="works-tab" data-toggle="tab" data-target="#works" type="button" role="tab" aria-controls="works" aria-selected="false">Works</button>
             </li>
         </ul>
 
@@ -43,8 +34,7 @@
             <div class="tab-pane fade show active" id="home" role="tabpanel">
                 <div class="alert my-3 alert-theme" role="alert">
                     <span><b>VIN:</b> {{ car_data.vin }}]</span><br/>
-                    <span><b>Покупка:</b> {{ car_data.purchase_date }}
-                        [{{ car_data.price }} {{ car_data.currency }}]</span><br/>
+                    <span><b>Покупка:</b> {{ car_data.purchase_date }} [{{ car_data.price }} {{ car_data.currency }}]</span><br/>
                     <span><b>Информация:</b> {{ car_data.comment }}</span><br/>
                 </div>
             </div>
@@ -52,11 +42,11 @@
                 <div class="alert my-3 alert-theme" role="alert">
                     <table class="table table-hover table-striped table-bordered table-sm small table-secondary">
                             <thead class="thead-dark">
-                            <tr class="text-center">
-                                <th scope="col" style="width: 20%;">Пробег</th>
-                                <th scope="col" style="width: 20%;">Месяц</th>
-                                <th scope="col" style="width: 60%;">Работа</th>
-                            </tr>
+                                <tr class="text-center">
+                                    <th scope="col" style="width: 20%;">Пробег</th>
+                                    <th scope="col" style="width: 20%;">Месяц</th>
+                                    <th scope="col" style="width: 60%;">Работа</th>
+                                </tr>
                             </thead>
                             <tbody>
                             {% for el in works_regular %}
@@ -72,16 +62,48 @@
             </div>
             <div class="tab-pane fade" id="works" role="tabpanel">
                 <div class="alert my-3 alert-theme" role="alert">
+                    <form method="post">
+                        <div class="form-row align-items-center">
+                            <div class="col">
+                                <input type="number" id="mileage" name="mileage" title="Mileage" class="form-control" maxlength="10" placeholder="Mileage">
+                            </div>
+                            <div class="col">
+                                <input type="date" id="work_date" name="work_date" title="work_date" class="form-control">
+                            </div>
+                            <div class="col-4">
+                                <input type="text" id="work_name" name="work_name" title="Work name" class="form-control" maxlength="100" placeholder="Work">
+                            </div>
+                            <div class="col">
+                                <select class="form-control" name="work_type" id="work_type" title="Type">
+                                    <option value="regular" selected>Regular</option>
+                                    <option value="replacement">Replacement</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <input type="number" id="price" name="price" title="Price" class="form-control" maxlength="10" placeholder="Price">
+                            </div>
+                            <div class="col">
+                                <input type="text" id="currency" name="currency" title="Currency" class="form-control" maxlength="10" placeholder="Cur">
+                            </div>
+                            <div class="col">
+                                <input type="submit" class="btn btn-success" value="Add">
+                            </div>
+                            <input type="hidden" id="car_id" name="car_id" value="{{ car_data.id }}">
+                        </div>
+                    </form>
+                    <br/>
                     <table class="table table-hover table-striped table-bordered table-sm small table-secondary">
                         <thead class="thead-dark">
-                        <tr class="text-center">
-                            <th scope="col" style="width: 10%;">Пробег</th>
-                            <th scope="col" style="width: 10%;">Дата</th>
-                            <th scope="col" style="width: 50%;">Работа</th>
-                            <th scope="col" style="width: 10%;">Тип</th>
-                            <th scope="col" style="width: 10%;">Цена</th>
-                            <th scope="col" style="width: 10%;">Валюта</th>
-                        </tr>
+                            <tr class="text-center">
+                                <th scope="col" style="width: 10%;">Пробег</th>
+                                <th scope="col" style="width: 10%;">Дата</th>
+                                <th scope="col" style="width: 45%;">Работа</th>
+                                <th scope="col" style="width: 10%;">Тип</th>
+                                <th scope="col" style="width: 10%;">Цена</th>
+                                <th scope="col" style="width: 10%;">Валюта</th>
+                                <th scope="col" style="width: 5%;">Delete</th>
+                            </tr>
                         </thead>
                         <tbody>
                         {% for el in works_done %}
@@ -101,6 +123,9 @@
                                 </td>
                                 <td class="text-center">{{ el.price }}</td>
                                 <td class="text-center">{{ el.currency }}</td>
+                                <td class="text-center">
+                                    <a href="/cars/{{ el.id }}/work_del" class="btn btn-sm btn-outline-danger py-0" style="font-size: 0.8em;">del</a>
+                                </td>
                             </tr>
                         {% endfor %}
                         </tbody>

@@ -432,43 +432,55 @@ class CarMain(BaseModel):
 
 
 class CarWorksRegular(BaseModel):
-    def __init__(self, car_id):
+    def __init__(self):
         super().__init__()
         self.table_name = 'car_works_regular'
         self.table_columns = ['car_id', 'mileage', 'month_delta', 'work_name']
         self.order_by = 'ORDER BY month_delta'
-        self.works_regular = self.select_from_db(where=f'WHERE car_id={car_id}')
 
-    @property
-    def data(self):
-        return self.works_regular
+    def get_car_data(self, car_id):
+        return self.select_from_db(where=f'WHERE car_id={car_id}')
 
 
 class CarWorksDone(BaseModel):
-    def __init__(self, car_id):
+    def __init__(self):
         super().__init__()
         self.table_name = 'car_works_done'
-        self.table_columns = ['car_id', 'mileage', 'work_date', 'work_name',
-                              'work_type', 'price', 'currency']
-        self.order_by = 'ORDER BY mileage'
-        self.works_done = self.select_from_db(where=f'WHERE car_id={car_id}')
+        self.table_columns = ['id', 'car_id', 'mileage', 'work_date',
+                              'work_name', 'work_type', 'price', 'currency']
+        self.order_by = 'ORDER BY mileage DESC'
 
-    @property
-    def data(self):
-        return self.works_done
+    def get_data(self, car_id):
+        return self.select_from_db(where=f'WHERE car_id={car_id}')
 
 
 class CarsManager:
     def __init__(self):
         self.cars = CarMain().get_cars()
         self.result = list()
+        self.obj_regular = CarWorksRegular()
+        self.obj_done = CarWorksDone()
 
     def get_data(self):
         for car in self.cars:
             car_id = car['id']
             self.result.append({
                 'car_data': car,
-                'works_regular': CarWorksRegular(car_id).data,
-                'works_done': CarWorksDone(car_id).data
+                'works_regular': self.obj_regular.get_car_data(car_id),
+                'works_done': self.obj_done.get_data(car_id)
             })
         return self.result
+
+    def commit_work(self, context):
+        if not self._validate_context(context):
+            return
+        self.obj_done.insert_to_db(values=context)
+
+    def _validate_context(self, context):
+        for col in self.obj_done.table_columns:
+            if not context.get(col, None):
+                return False
+        return True
+
+    def delete_work(self, work_id):
+        self.obj_done.delete_from_db(where=f'WHERE id={work_id}')
