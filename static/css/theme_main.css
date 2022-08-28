@@ -91,3 +91,23 @@ body {
     border: none;
     background: #f1f1f1;
 }
+
+.table .tr-inputs th {
+    position: relative;
+    padding: 0 0 1.2rem;
+    margin: 0;
+}
+
+.table .tr-inputs div {
+    position: absolute;
+    display: inline-block;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.table input, select {
+    width: 100%;
+    box-sizing: border-box;
+}

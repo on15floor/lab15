@@ -476,11 +476,16 @@ class CarsManager:
 
     def commit_work(self, context):
         if not self._validate_work_context(context):
+            print('not validate')
             return
+        print('validate')
         self.obj_done.insert_to_db(values=context)
 
     def _validate_work_context(self, context):
+        escape_col = ('id', 'price', 'currency')
         for col in self.obj_done.table_columns:
+            if col in escape_col:
+                continue
             if not context.get(col, None):
                 return False
         return True

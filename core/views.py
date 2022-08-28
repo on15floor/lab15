@@ -222,6 +222,7 @@ def crypto():
 def cars():
     obj = CarsManager()
     if request.method == 'POST':
+        print(dict(request.form.items()))
         obj.commit_work(context=dict(request.form.items()))
 
     return render_template('admin/cars.html', cars=obj.get_data())
