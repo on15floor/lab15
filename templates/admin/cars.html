@@ -41,23 +41,33 @@
             <div class="tab-pane fade" id="regular" role="tabpanel">
                 <div class="alert my-3 alert-theme" role="alert">
                     <table class="table table-hover table-striped table-bordered table-sm small table-secondary">
-                            <thead class="thead-dark">
-                                <tr class="text-center">
-                                    <th scope="col" style="width: 20%;">Пробег</th>
-                                    <th scope="col" style="width: 20%;">Месяц</th>
-                                    <th scope="col" style="width: 60%;">Работа</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            {% for el in works_regular %}
+                        <thead class="thead-dark">
+                            <tr class="text-center">
+                                <th scope="col" style="width: 15%;">Δ Пробег</th>
+                                <th scope="col" style="width: 15%;">Δ Месяц</th>
+                                <th scope="col" style="width: 40%;">Работа</th>
+                                <th scope="col" style="width: 15%;">До замены, км</th>
+                                <th scope="col" style="width: 15%;">До замены, месяцев</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for el in works_regular %}
+                            {% if el.warning_lvl == 2 or not el.milage_to_check or not el.month_to_check%}
+                                <tr style="background-color: rgba(239,80,82,0.6)">{{ el.left_to_check_mileage }}
+                            {% elif el.warning_lvl == 1 %}
+                                <tr style="background-color: rgba(255,181,127,0.6)">{{ el.left_to_check_mileage }}
+                            {% else %}
                                 <tr>
-                                    <td class="text-center">{{ el.mileage }}</td>
-                                    <td class="text-center">{{ el.month_delta }}</td>
-                                    <td>{{ el.work_name }}</td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
+                            {% endif %}
+                                <td class="text-center">{{ el.mileage }}</td>
+                                <td class="text-center">{{ el.month }}</td>
+                                <td>{{ el.work_name }}</td>
+                                <td>{{ el.milage_to_check }}</td>
+                                <td>{{ el.month_to_check }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
             <div class="tab-pane fade" id="works" role="tabpanel">

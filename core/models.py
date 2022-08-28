@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 from core import hardcode
 from config import DataBase
 from utils.sqlite_wrap import SQLite3Instance
+from utils.utils import diff_month
 
 
 REMIND_DATE_RE = re.compile(r'^[\d,-]*$')
@@ -435,8 +436,8 @@ class CarWorksRegular(BaseModel):
     def __init__(self):
         super().__init__()
         self.table_name = 'car_works_regular'
-        self.table_columns = ['car_id', 'mileage', 'month_delta', 'work_name']
-        self.order_by = 'ORDER BY month_delta'
+        self.table_columns = ['car_id', 'mileage', 'month', 'work_name']
+        self.order_by = 'ORDER BY month'
 
     def get_car_data(self, car_id):
         return self.select_from_db(where=f'WHERE car_id={car_id}')
@@ -464,19 +465,21 @@ class CarsManager:
     def get_data(self):
         for car in self.cars:
             car_id = car['id']
+            works_done = self.obj_done.get_data(car_id)
+            works_regular = self._get_works_regular(car_id, works_done)
             self.result.append({
                 'car_data': car,
-                'works_regular': self.obj_regular.get_car_data(car_id),
-                'works_done': self.obj_done.get_data(car_id)
+                'works_regular': works_regular,
+                'works_done': works_done
             })
         return self.result
 
     def commit_work(self, context):
-        if not self._validate_context(context):
+        if not self._validate_work_context(context):
             return
         self.obj_done.insert_to_db(values=context)
 
-    def _validate_context(self, context):
+    def _validate_work_context(self, context):
         for col in self.obj_done.table_columns:
             if not context.get(col, None):
                 return False
@@ -484,3 +487,42 @@ class CarsManager:
 
     def delete_work(self, work_id):
         self.obj_done.delete_from_db(where=f'WHERE id={work_id}')
+
+    def _get_works_regular(self, car_id, works_done):
+        mileage_last = works_done[0]['mileage']
+
+        works_regular = self.obj_regular.get_car_data(car_id)
+        for work_regular in works_regular:
+            for work_done in works_done:
+                if work_done['work_type'] != 'regular':
+                    continue
+                if work_done['work_name'] == work_regular['work_name']:
+                    milage_to_check = self._get_milage_to_check(
+                        work_regular, mileage_last, work_done)
+                    month_to_check = self._get_month_to_check(
+                        work_regular, work_done)
+                    work_regular['milage_to_check'] = milage_to_check
+                    work_regular['month_to_check'] = month_to_check
+                    work_regular['warning_lvl'] = self._get_warning_lvl(
+                        milage_to_check, month_to_check)
+                    break
+            pass
+
+        return works_regular
+
+    @staticmethod
+    def _get_milage_to_check(work_regular, milage_last, work_done):
+        return work_regular['mileage'] - milage_last + work_done['mileage']
+
+    @staticmethod
+    def _get_month_to_check(work_regular, work_done):
+        work_done_dt = datetime.strptime(work_done['work_date'], '%Y-%m-%d')
+        return work_regular['month'] - diff_month(datetime.now(), work_done_dt)
+
+    @staticmethod
+    def _get_warning_lvl(milage_to_check, month_to_check):
+        if milage_to_check <= 0 or month_to_check <= 0:
+            return 2
+        elif milage_to_check < 1000 or month_to_check < 1:
+            return 1
+        return 0

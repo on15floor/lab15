@@ -11,7 +11,7 @@
                 <div class="col-md-3">
                     <h6 class="text-center">{{ month_addr }}</h6>
                         {% if month_data.current_month == True %}
-                            <table class="table table-bordered table-sm small text-center calendar_this_month">
+                            <table class="table table-bordered table-sm small text-center" style="background-color: #c8d2d2;">
                         {% else %}
                             <table class="table table-bordered table-sm small text-center table-secondary">
                         {% endif %}
@@ -20,9 +20,9 @@
                             <tr>
                                 {% for day, day_data in weeks_data.items() %}
                                     {% if day_data.current_day == True %}
-                                        <td class="calendar_this_day">{{ day_data.day | safe}}</td>
+                                        <td style="background-color: #96be78;">{{ day_data.day | safe}}</td>
                                     {% elif day_data.weekend == True and day_data.day != "&nbsp" %}
-                                        <td class="calendar_weekend">{{ day_data.day | safe}}</td>
+                                        <td style="background-color: #506e6e;">{{ day_data.day | safe}}</td>
                                     {% else %}
                                         <td>{{ day_data.day | safe}}</td>
                                     {% endif %}

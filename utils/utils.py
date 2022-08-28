@@ -40,6 +40,10 @@ def _get_file_ext(fname):
     return pathlib.Path(fname).suffix
 
 
+def diff_month(d1: datetime, d2: datetime):
+    return (d1.year - d2.year) * 12 + d1.month - d2.month
+
+
 class Calendar:
     def __init__(self):
         self.dt_now = datetime.now()
