@@ -476,9 +476,7 @@ class CarsManager:
 
     def commit_work(self, context):
         if not self._validate_work_context(context):
-            print('not validate')
             return
-        print('validate')
         self.obj_done.insert_to_db(values=context)
 
     def _validate_work_context(self, context):
