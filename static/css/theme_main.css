@@ -36,7 +36,7 @@ body {
     }
 }
 
-/*Snow flake*/
+/* Snow flake */
 .snowflake {
     position: absolute;
     width: 10px;
@@ -68,7 +68,7 @@ body {
     background: #202529;
 }
 
-/*Login Fomr*/
+/* Login Form */
 .form-login {
     display: none;
     border: 3px solid #222222;
@@ -92,6 +92,7 @@ body {
     background: #f1f1f1;
 }
 
+/* Inputs in table */
 .table .tr-inputs th {
     position: relative;
     padding: 0 0 1.2rem;
